@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { MdLogout } from 'react-icons/md';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
@@ -17,8 +18,8 @@ const Header: React.FC = () => {
           <div style={styles.userRole}>{user?.role}</div>
         </div>
       </div>
-      <button onClick={logout} style={styles.logoutButton}>
-        Déconnexion
+      <button onClick={logout} style={styles.logoutButton} title="Déconnexion">
+        <MdLogout style={{ fontSize: '20px' }} />
       </button>
     </header>
   );
@@ -64,15 +65,20 @@ const styles: Record<string, React.CSSProperties> = {
     textTransform: 'capitalize',
   },
   logoutButton: {
-    padding: '8px 18px',
+    padding: '12px',
     background: '#ffffff',
-    color: '#374151',
-    border: '1px solid #d1d5db',
-    borderRadius: '6px',
+    color: '#dc2626',
+    border: '2px solid #fca5a5',
+    borderRadius: '10px',
     cursor: 'pointer',
-    fontSize: '13px',
+    fontSize: '14px',
     fontWeight: '500',
-    transition: 'all 0.2s',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
+    transition: 'all 0.2s ease',
+    boxShadow: '0 2px 4px rgba(220, 38, 38, 0.1)',
   },
 };
 
