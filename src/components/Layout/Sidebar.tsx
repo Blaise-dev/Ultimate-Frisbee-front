@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { MdDashboard, MdEventNote, MdPeople, MdGroup, MdSportsMartialArts, MdSportsBaseball } from 'react-icons/md';
+import { MdDashboard, MdEventNote, MdPeople, MdGroup, MdSportsMartialArts, MdSportsBaseball, MdDirectionsRun } from 'react-icons/md';
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
@@ -11,7 +11,7 @@ const Sidebar: React.FC = () => {
     { path: '/dashboard', label: 'Tableau de bord', icon: <MdDashboard />, roles: ['ADMIN', 'COACH', 'ATHLETE'] },
     { path: '/sessions', label: 'Séances', icon: <MdEventNote />, roles: ['ADMIN', 'COACH', 'ATHLETE'] },
     { path: '/groups', label: 'Mes Groupes', icon: <MdGroup />, roles: ['ATHLETE'] },
-    { path: '/athletes', label: 'Athlètes', icon: <MdPeople />, roles: ['ADMIN', 'COACH'] },
+    { path: '/athletes', label: 'Athlètes', icon: <MdDirectionsRun />, roles: ['ADMIN', 'COACH'] },
     { path: '/groups', label: 'Groupes', icon: <MdGroup />, roles: ['ADMIN', 'COACH'] },
     { path: '/coaches', label: 'Coachs', icon: <MdSportsMartialArts />, roles: ['ADMIN'] },
   ];

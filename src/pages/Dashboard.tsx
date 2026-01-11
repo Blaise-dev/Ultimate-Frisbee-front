@@ -120,24 +120,37 @@ const Dashboard: React.FC = () => {
             <div style={styles.grid}>
               {sessions.slice(0, 6).map((session) => (
                 <div key={session.id} style={styles.card}>
-                  <div style={styles.cardHeader}>
+                  <div style={styles.cardImage}>
+                    <img 
+                      src={session.type === 'TRAINING' 
+                        ? 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&h=250&fit=crop' 
+                        : 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&h=250&fit=crop'
+                      } 
+                      alt={session.title}
+                      style={styles.cardImg}
+                    />
                     <span style={{
                       ...styles.badge,
+                      position: 'absolute',
+                      top: '12px',
+                      right: '12px',
                       background: session.type === 'TRAINING' ? '#e3f2fd' : '#fce4ec',
                       color: session.type === 'TRAINING' ? '#1976d2' : '#c2185b',
                     }}>
                       {getSessionTypeLabel(session.type)}
                     </span>
                   </div>
-                  <h3 style={styles.cardTitle}>{session.title}</h3>
-                  <p style={styles.cardText}><MdLocationOn style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {session.location || 'Lieu non défini'}</p>
-                  <p style={styles.cardText}><MdSchedule style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {formatDate(session.startTime)}</p>
-                  <p style={styles.cardText}>
-                    <MdGroup style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {(session as any).athletes?.length || 0} athlète(s)
-                  </p>
-                  {session.description && (
-                    <p style={styles.cardDescription}>{session.description}</p>
-                  )}
+                  <div style={styles.cardBody}>
+                    <h3 style={styles.cardTitle}>{session.title}</h3>
+                    <p style={styles.cardText}><MdLocationOn style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {session.location || 'Lieu non défini'}</p>
+                    <p style={styles.cardText}><MdSchedule style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {formatDate(session.startTime)}</p>
+                    <p style={styles.cardText}>
+                      <MdGroup style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {(session as any).athletes?.length || 0} athlète(s)
+                    </p>
+                    {session.description && (
+                      <p style={styles.cardDescription}>{session.description}</p>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -153,10 +166,14 @@ const Dashboard: React.FC = () => {
               <div style={styles.athleteGrid}>
                 {athletes.slice(0, 6).map((athlete) => (
                   <div key={athlete.id} style={styles.athleteCard}>
-                    <div style={styles.athleteAvatar}>
-                      {athlete.firstName[0]}{athlete.lastName[0]}
+                    <div style={styles.athleteCardImage}>
+                      <img 
+                        src={`https://ui-avatars.com/api/?name=${athlete.firstName}+${athlete.lastName}&size=400&background=10b981&color=fff&bold=true`}
+                        alt={`${athlete.firstName} ${athlete.lastName}`}
+                        style={styles.athleteImg}
+                      />
                     </div>
-                    <div>
+                    <div style={styles.athleteCardBody}>
                       <h4 style={styles.athleteName}>
                         {athlete.firstName} {athlete.lastName}
                       </h4>
@@ -165,6 +182,7 @@ const Dashboard: React.FC = () => {
                       </p>
                       {athlete.groups && athlete.groups.length > 0 && (
                         <p style={styles.athleteGroups}>
+                          <MdGroup style={{ verticalAlign: 'middle', marginRight: '4px' }} />
                           {athlete.groups.map((ag: any) => ag.group.name).join(', ')}
                         </p>
                       )}
@@ -241,11 +259,26 @@ const styles: Record<string, React.CSSProperties> = {
     gap: '20px',
   },
   card: {
-    padding: '20px',
     border: '2px solid #e5e7eb',
     borderRadius: '16px',
     transition: 'all 0.3s ease',
     background: 'white',
+    overflow: 'hidden',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+  },
+  cardImage: {
+    position: 'relative',
+    width: '100%',
+    height: '200px',
+    overflow: 'hidden',
+  },
+  cardImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  cardBody: {
+    padding: '20px',
   },
   cardHeader: {
     marginBottom: '12px',
@@ -278,18 +311,30 @@ const styles: Record<string, React.CSSProperties> = {
   },
   athleteGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-    gap: '16px',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+    gap: '20px',
   },
   athleteCard: {
-    padding: '20px',
     border: '2px solid #e5e7eb',
     borderRadius: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
     transition: 'all 0.3s ease',
     background: 'white',
+    overflow: 'hidden',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+  },
+  athleteCardImage: {
+    width: '100%',
+    height: '180px',
+    overflow: 'hidden',
+    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+  },
+  athleteImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  athleteCardBody: {
+    padding: '20px',
   },
   athleteAvatar: {
     width: '56px',
@@ -306,21 +351,23 @@ const styles: Record<string, React.CSSProperties> = {
     boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
   },
   athleteName: {
-    margin: '0 0 6px 0',
-    fontSize: '16px',
+    margin: '0 0 8px 0',
+    fontSize: '17px',
     fontWeight: '700',
     color: '#1a1f36',
   },
   athleteInfo: {
-    margin: '4px 0',
+    margin: '0 0 8px 0',
     fontSize: '14px',
     color: '#6b7280',
   },
   athleteGroups: {
-    margin: '6px 0 0 0',
-    fontSize: '12px',
-    color: '#9ca3af',
+    margin: '0',
+    fontSize: '13px',
+    color: '#10b981',
     fontWeight: '500',
+    display: 'flex',
+    alignItems: 'center',
   },
   loading: {
     textAlign: 'center',
