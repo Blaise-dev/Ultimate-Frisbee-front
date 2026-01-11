@@ -5,12 +5,14 @@ import { useAuth } from '../contexts/AuthContext';
 import { sessionService } from '../services/session.service';
 import { athleteService } from '../services/athlete.service';
 import { Session, Athlete } from '../types';
-import { MdDashboard, MdEventNote, MdAccessTime, MdPeople, MdLocationOn, MdSchedule, MdGroup } from 'react-icons/md';
+import { MdDashboard, MdEventNote, MdAccessTime, MdPeople, MdLocationOn, MdSchedule, MdGroup, MdClose, MdEmail, MdPhone, MdCake } from 'react-icons/md';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [athletes, setAthletes] = useState<Athlete[]>([]);
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+  const [selectedAthlete, setSelectedAthlete] = useState<Athlete | null>(null);
   const [stats, setStats] = useState({
     totalSessions: 0,
     upcomingSessions: 0,
@@ -119,7 +121,11 @@ const Dashboard: React.FC = () => {
           ) : (
             <div style={styles.grid}>
               {sessions.slice(0, 6).map((session) => (
-                <div key={session.id} style={styles.card}>
+                <div 
+                  key={session.id} 
+                  style={styles.card}
+                  onClick={() => setSelectedSession(session)}
+                >
                   <div style={styles.cardImage}>
                     <img 
                       src={session.type === 'TRAINING' 
@@ -165,7 +171,11 @@ const Dashboard: React.FC = () => {
             ) : (
               <div style={styles.athleteGrid}>
                 {athletes.slice(0, 6).map((athlete) => (
-                  <div key={athlete.id} style={styles.athleteCard}>
+                  <div 
+                    key={athlete.id} 
+                    style={styles.athleteCard}
+                    onClick={() => setSelectedAthlete(athlete)}
+                  >
                     <div style={styles.athleteCardImage}>
                       <img 
                         src={`https://ui-avatars.com/api/?name=${athlete.firstName}+${athlete.lastName}&size=400&background=10b981&color=fff&bold=true`}
@@ -194,6 +204,128 @@ const Dashboard: React.FC = () => {
           </Card>
         )}
       </div>
+
+      {/* Modal Détails Séance */}
+      {selectedSession && (
+        <div style={styles.modalOverlay} onClick={() => setSelectedSession(null)}>
+          <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <button style={styles.closeButton} onClick={() => setSelectedSession(null)}>
+              <MdClose style={{ fontSize: '24px' }} />
+            </button>
+            <div style={styles.modalImageContainer}>
+              <img 
+                src={selectedSession.type === 'TRAINING' 
+                  ? 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&h=400&fit=crop' 
+                  : 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&h=400&fit=crop'
+                } 
+                alt={selectedSession.title}
+                style={styles.modalImage}
+              />
+              <span style={{
+                ...styles.badge,
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                background: selectedSession.type === 'TRAINING' ? '#e3f2fd' : '#fce4ec',
+                color: selectedSession.type === 'TRAINING' ? '#1976d2' : '#c2185b',
+              }}>
+                {getSessionTypeLabel(selectedSession.type)}
+              </span>
+            </div>
+            <div style={styles.modalBody}>
+              <h2 style={styles.modalTitle}>{selectedSession.title}</h2>
+              <div style={styles.modalDetails}>
+                <p style={styles.modalDetailItem}>
+                  <MdLocationOn style={styles.modalIcon} />
+                  <strong>Lieu:</strong> {selectedSession.location || 'Non défini'}
+                </p>
+                <p style={styles.modalDetailItem}>
+                  <MdSchedule style={styles.modalIcon} />
+                  <strong>Date:</strong> {formatDate(selectedSession.startTime)}
+                </p>
+                <p style={styles.modalDetailItem}>
+                  <MdAccessTime style={styles.modalIcon} />
+                  <strong>Durée:</strong> {selectedSession.duration} minutes
+                </p>
+                <p style={styles.modalDetailItem}>
+                  <MdGroup style={styles.modalIcon} />
+                  <strong>Participants:</strong> {(selectedSession as any).athletes?.length || 0} athlète(s)
+                </p>
+                {selectedSession.description && (
+                  <div style={styles.modalDescription}>
+                    <strong>Description:</strong>
+                    <p>{selectedSession.description}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Détails Athlète */}
+      {selectedAthlete && (
+        <div style={styles.modalOverlay} onClick={() => setSelectedAthlete(null)}>
+          <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <button style={styles.closeButton} onClick={() => setSelectedAthlete(null)}>
+              <MdClose style={{ fontSize: '24px' }} />
+            </button>
+            <div style={styles.modalImageContainer}>
+              <img 
+                src={`https://ui-avatars.com/api/?name=${selectedAthlete.firstName}+${selectedAthlete.lastName}&size=600&background=10b981&color=fff&bold=true`}
+                alt={`${selectedAthlete.firstName} ${selectedAthlete.lastName}`}
+                style={styles.modalImage}
+              />
+            </div>
+            <div style={styles.modalBody}>
+              <h2 style={styles.modalTitle}>
+                {selectedAthlete.firstName} {selectedAthlete.lastName}
+              </h2>
+              <div style={styles.modalDetails}>
+                <p style={styles.modalDetailItem}>
+                  <MdPeople style={styles.modalIcon} />
+                  <strong>Catégorie:</strong> {selectedAthlete.category}
+                </p>
+                <p style={styles.modalDetailItem}>
+                  <MdDashboard style={styles.modalIcon} />
+                  <strong>Niveau:</strong> {selectedAthlete.level}
+                </p>
+                {selectedAthlete.email && (
+                  <p style={styles.modalDetailItem}>
+                    <MdEmail style={styles.modalIcon} />
+                    <strong>Email:</strong> {selectedAthlete.email}
+                  </p>
+                )}
+                {selectedAthlete.phone && (
+                  <p style={styles.modalDetailItem}>
+                    <MdPhone style={styles.modalIcon} />
+                    <strong>Téléphone:</strong> {selectedAthlete.phone}
+                  </p>
+                )}
+                {selectedAthlete.dateOfBirth && (
+                  <p style={styles.modalDetailItem}>
+                    <MdCake style={styles.modalIcon} />
+                    <strong>Date de naissance:</strong> {new Date(selectedAthlete.dateOfBirth).toLocaleDateString('fr-FR')}
+                  </p>
+                )}
+                {selectedAthlete.groups && selectedAthlete.groups.length > 0 && (
+                  <div style={styles.modalDescription}>
+                    <p style={styles.modalDetailItem}>
+                      <MdGroup style={styles.modalIcon} />
+                      <strong>Groupes:</strong>
+                    </p>
+                    <ul style={styles.groupsList}>
+                      {selectedAthlete.groups.map((ag: any) => (
+                        <li key={ag.group.id}>{ag.group.name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </MainLayout>
   );
 };
@@ -265,6 +397,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'white',
     overflow: 'hidden',
     boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+    cursor: 'pointer',
   },
   cardImage: {
     position: 'relative',
@@ -321,6 +454,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'white',
     overflow: 'hidden',
     boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+    cursor: 'pointer',
   },
   athleteCardImage: {
     width: '100%',
@@ -379,6 +513,103 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '40px',
     textAlign: 'center',
     color: '#999',
+  },
+  modalOverlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(0, 0, 0, 0.7)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000,
+    padding: '20px',
+  },
+  modalContent: {
+    background: 'white',
+    borderRadius: '20px',
+    maxWidth: '700px',
+    width: '100%',
+    maxHeight: '90vh',
+    overflow: 'auto',
+    position: 'relative',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: '16px',
+    left: '16px',
+    background: 'rgba(255, 255, 255, 0.95)',
+    border: 'none',
+    borderRadius: '50%',
+    width: '44px',
+    height: '44px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    zIndex: 10,
+    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+    transition: 'all 0.2s ease',
+    color: '#374151',
+  },
+  modalImageContainer: {
+    position: 'relative',
+    width: '100%',
+    height: '350px',
+    overflow: 'hidden',
+    borderRadius: '20px 20px 0 0',
+  },
+  modalImage: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  modalBody: {
+    padding: '32px',
+  },
+  modalTitle: {
+    margin: '0 0 24px 0',
+    fontSize: '28px',
+    fontWeight: '700',
+    color: '#1a1f36',
+  },
+  modalDetails: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px',
+  },
+  modalDetailItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    fontSize: '16px',
+    color: '#374151',
+    margin: '0',
+  },
+  modalIcon: {
+    fontSize: '24px',
+    color: '#10b981',
+    flexShrink: 0,
+  },
+  modalDescription: {
+    marginTop: '8px',
+    padding: '20px',
+    background: '#f9fafb',
+    borderRadius: '12px',
+    fontSize: '15px',
+    color: '#4b5563',
+    lineHeight: '1.6',
+  },
+  groupsList: {
+    listStyle: 'none',
+    padding: '12px 0 0 0',
+    margin: '0',
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '8px',
   },
 };
 
