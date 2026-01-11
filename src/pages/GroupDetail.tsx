@@ -103,25 +103,28 @@ const GroupDetail: React.FC = () => {
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>Athlètes ({(group as any).athletes.length})</h2>
             <div style={styles.athletesList}>
-              {(group as any).athletes.map((athlete: any) => (
-                <div 
-                  key={athlete.id} 
-                  style={styles.athleteItem}
-                  onClick={() => navigate(`/athletes/${athlete.id}`)}
-                >
-                  <div style={styles.athleteAvatar}>
-                    {athlete.firstName[0]}{athlete.lastName[0]}
-                  </div>
-                  <div>
-                    <div style={styles.athleteName}>
-                      {athlete.firstName} {athlete.lastName}
+              {(group as any).athletes.map((athleteGroup: any) => {
+                const athlete = athleteGroup.athlete || athleteGroup;
+                return (
+                  <div 
+                    key={athlete.id} 
+                    style={styles.athleteItem}
+                    onClick={() => navigate(`/athletes/${athlete.id}`)}
+                  >
+                    <div style={styles.athleteAvatar}>
+                      {athlete.firstName[0]}{athlete.lastName[0]}
                     </div>
-                    <div style={styles.athleteLevel}>
-                      {athlete.category} · {athlete.level}
+                    <div>
+                      <div style={styles.athleteName}>
+                        {athlete.firstName} {athlete.lastName}
+                      </div>
+                      <div style={styles.athleteLevel}>
+                        {athlete.category} · {athlete.level}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

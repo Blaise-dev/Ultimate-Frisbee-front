@@ -165,25 +165,28 @@ const SessionDetail: React.FC = () => {
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>Participants ({(session as any).athletes.length})</h2>
             <div style={styles.athletesList}>
-              {(session as any).athletes.map((athlete: any) => (
-                <div 
-                  key={athlete.id} 
-                  style={styles.athleteItem}
-                  onClick={() => navigate(`/athletes/${athlete.id}`)}
-                >
-                  <div style={styles.athleteAvatar}>
-                    {athlete.firstName[0]}{athlete.lastName[0]}
-                  </div>
-                  <div>
-                    <div style={styles.athleteName}>
-                      {athlete.firstName} {athlete.lastName}
+              {(session as any).athletes.map((athleteSession: any) => {
+                const athlete = athleteSession.athlete || athleteSession;
+                return (
+                  <div 
+                    key={athlete.id} 
+                    style={styles.athleteItem}
+                    onClick={() => navigate(`/athletes/${athlete.id}`)}
+                  >
+                    <div style={styles.athleteAvatar}>
+                      {athlete.firstName[0]}{athlete.lastName[0]}
                     </div>
-                    <div style={styles.athleteLevel}>
-                      {athlete.category} · {athlete.level}
+                    <div>
+                      <div style={styles.athleteName}>
+                        {athlete.firstName} {athlete.lastName}
+                      </div>
+                      <div style={styles.athleteLevel}>
+                        {athlete.category} · {athlete.level}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
