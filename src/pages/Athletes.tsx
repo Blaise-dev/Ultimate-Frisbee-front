@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/Layout/MainLayout';
 import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
@@ -11,6 +12,7 @@ import { MdPeople, MdAdd, MdEdit, MdDelete } from 'react-icons/md';
 
 const Athletes: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [athletes, setAthletes] = useState<Athlete[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -140,7 +142,10 @@ const Athletes: React.FC = () => {
           <div style={styles.grid}>
             {athletes.map((athlete) => (
               <div key={athlete.id} style={styles.athleteCard}>
-                <div style={styles.athleteHeader}>
+                <div 
+                  style={styles.athleteHeader}
+                  onClick={() => navigate(`/athletes/${athlete.id}`)}
+                >
                   <div style={styles.avatar}>
                     {athlete.firstName[0]}{athlete.lastName[0]}
                   </div>
@@ -277,6 +282,8 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: '16px',
     marginBottom: '16px',
+    cursor: 'pointer',
+    transition: 'opacity 0.2s',
   },
   avatar: {
     width: '50px',

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/Layout/MainLayout';
 import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
@@ -12,6 +13,7 @@ import { MdGroup, MdAdd, MdEdit, MdDelete, MdSportsMartialArts } from 'react-ico
 
 const Groups: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [loading, setLoading] = useState(true);
@@ -137,7 +139,10 @@ const Groups: React.FC = () => {
           <div style={styles.grid}>
             {groups.map((group) => (
               <div key={group.id} style={styles.groupCard}>
-                <div style={styles.groupHeader}>
+                <div 
+                  style={styles.groupHeader}
+                  onClick={() => navigate(`/groups/${group.id}`)}
+                >
                   <h3 style={styles.groupName}>{group.name}</h3>
                   <span style={styles.badge}>
                     {group.type}
@@ -266,6 +271,8 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: '16px',
+    cursor: 'pointer',
+    transition: 'opacity 0.2s',
   },
   groupName: {
     margin: 0,

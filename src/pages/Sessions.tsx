@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/Layout/MainLayout';
 import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
@@ -12,6 +13,7 @@ import { MdEventNote, MdAdd, MdEdit, MdDelete, MdLocationOn, MdSchedule, MdSport
 
 const Sessions: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [loading, setLoading] = useState(true);
@@ -155,32 +157,37 @@ const Sessions: React.FC = () => {
           <div style={styles.grid}>
             {sessions.map((session) => (
               <div key={session.id} style={styles.sessionCard}>
-                <div style={styles.sessionHeader}>
-                  <span
-                    style={{
-                      ...styles.badge,
-                      background: session.type === 'TRAINING' ? '#e3f2fd' : '#fce4ec',
-                      color: session.type === 'TRAINING' ? '#1976d2' : '#c2185b',
-                    }}
-                  >
-                    {session.type === 'TRAINING' ? 'Entraînement' : 'Match'}
-                  </span>
-                </div>
-                <h3 style={styles.sessionTitle}>{session.title}</h3>
-                <div style={styles.sessionDetails}>
-                  <p style={styles.detail}><MdLocationOn style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {session.location || 'Lieu non défini'}</p>
-                  <p style={styles.detail}><MdSchedule style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {formatDate(session.startTime)}</p>
-                  <p style={styles.detail}>
-                    <MdSchedule style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {formatDate(session.endTime)}
-                  </p>
-                  {(session as any).coach && (
+                <div 
+                  style={styles.sessionContent}
+                  onClick={() => navigate(`/sessions/${session.id}`)}
+                >
+                  <div style={styles.sessionHeader}>
+                    <span
+                      style={{
+                        ...styles.badge,
+                        background: session.type === 'TRAINING' ? '#e3f2fd' : '#fce4ec',
+                        color: session.type === 'TRAINING' ? '#1976d2' : '#c2185b',
+                      }}
+                    >
+                      {session.type === 'TRAINING' ? 'Entraînement' : 'Match'}
+                    </span>
+                  </div>
+                  <h3 style={styles.sessionTitle}>{session.title}</h3>
+                  <div style={styles.sessionDetails}>
+                    <p style={styles.detail}><MdLocationOn style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {session.location || 'Lieu non défini'}</p>
+                    <p style={styles.detail}><MdSchedule style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {formatDate(session.startTime)}</p>
                     <p style={styles.detail}>
-                      <MdSportsScore style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {(session as any).coach.firstName} {(session as any).coach.lastName}
+                      <MdSchedule style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {formatDate(session.endTime)}
                     </p>
-                  )}
-                  {session.description && (
-                    <p style={styles.description}>{session.description}</p>
-                  )}
+                    {(session as any).coach && (
+                      <p style={styles.detail}>
+                        <MdSportsScore style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {(session as any).coach.firstName} {(session as any).coach.lastName}
+                      </p>
+                    )}
+                    {session.description && (
+                      <p style={styles.description}>{session.description}</p>
+                    )}
+                  </div>
                 </div>
                 {(user?.role === 'ADMIN' || user?.role === 'COACH') && (
                   <div style={styles.cardActions}>
@@ -310,6 +317,10 @@ const styles: Record<string, React.CSSProperties> = {
     border: '2px solid #f0f0f0',
     borderRadius: '12px',
     transition: 'all 0.2s',
+  },
+  sessionContent: {
+    cursor: 'pointer',
+    transition: 'opacity 0.2s',
   },
   sessionHeader: {
     marginBottom: '12px',
