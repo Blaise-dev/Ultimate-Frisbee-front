@@ -144,8 +144,8 @@ const Sessions: React.FC = () => {
       <div style={styles.header}>
         <h1 style={styles.title}><MdEventNote style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Séances</h1>
         {(user?.role === 'ADMIN' || user?.role === 'COACH') && (
-          <Button onClick={() => handleOpenModal()}>
-            <MdAdd style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Nouvelle séance
+          <Button onClick={() => handleOpenModal()} title="Nouvelle séance">
+            <MdAdd style={{ fontSize: '20px' }} />
           </Button>
         )}
       </div>
@@ -358,15 +358,18 @@ const styles: Record<string, React.CSSProperties> = {
   },
   actionButton: {
     flex: 1,
-    padding: '8px 12px',
+    padding: '10px',
     background: 'transparent',
-    border: '2px solid #e0e0e0',
+    border: '2px solid #e5e7eb',
     borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '14px',
     color: '#667eea',
     fontWeight: '600',
     transition: 'all 0.2s',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   modalActions: {
     display: 'flex',

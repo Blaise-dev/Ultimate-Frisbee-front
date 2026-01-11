@@ -147,8 +147,8 @@ const Athletes: React.FC = () => {
     <MainLayout>
       <div style={styles.header}>
         <h1 style={styles.title}><MdPeople style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Athlètes</h1>
-        <Button onClick={() => handleOpenModal()}>
-          <MdAdd style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Nouvel athlète
+        <Button onClick={() => handleOpenModal()} title="Nouvel athlète">
+          <MdAdd style={{ fontSize: '20px' }} />
         </Button>
       </div>
 
@@ -253,14 +253,16 @@ const Athletes: React.FC = () => {
                   <button
                     style={styles.actionButton}
                     onClick={() => handleOpenModal(athlete)}
+                    title="Modifier"
                   >
-                    <MdEdit style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Modifier
+                    <MdEdit style={{ fontSize: '18px' }} />
                   </button>
                   <button
                     style={{ ...styles.actionButton, color: '#ef4444' }}
                     onClick={() => handleDelete(athlete.id)}
+                    title="Supprimer"
                   >
-                    <MdDelete style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Supprimer
+                    <MdDelete style={{ fontSize: '18px' }} />
                   </button>
                 </div>
               </div>
@@ -497,7 +499,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   actionButton: {
     flex: 1,
-    padding: '8px 12px',
+    padding: '10px',
     background: 'transparent',
     border: '2px solid #e5e7eb',
     borderRadius: '8px',
@@ -506,6 +508,9 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#667eea',
     fontWeight: '600',
     transition: 'all 0.2s',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   modalActions: {
     display: 'flex',

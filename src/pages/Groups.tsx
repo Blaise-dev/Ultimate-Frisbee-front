@@ -9,7 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { groupService } from '../services/group.service';
 import { coachService } from '../services/coach.service';
 import { Group, Coach } from '../types';
-import { MdGroup, MdAdd, MdEdit, MdDelete, MdSportsMartialArts, MdSearch, MdFilterList, MdPeople } from 'react-icons/md';
+import { MdGroup, MdAdd, MdEdit, MdDelete, MdSportsMartialArts, MdSearch, MdFilterList, MdEmojiEvents, MdBeachAccess } from 'react-icons/md';
 
 const Groups: React.FC = () => {
   const { user } = useAuth();
@@ -134,8 +134,8 @@ const Groups: React.FC = () => {
       <div style={styles.header}>
         <h1 style={styles.title}><MdGroup style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Groupes</h1>
         {(user?.role === 'ADMIN' || user?.role === 'COACH') && (
-          <Button onClick={() => handleOpenModal()}>
-            <MdAdd style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Nouveau groupe
+          <Button onClick={() => handleOpenModal()} title="Nouveau groupe">
+            <MdAdd style={{ fontSize: '20px' }} />
           </Button>
         )}
       </div>
@@ -157,14 +157,14 @@ const Groups: React.FC = () => {
           </div>
         </div>
         <div style={styles.statCard}>
-          <div style={{ ...styles.statIcon, background: '#fef3c7' }}><MdPeople style={{ color: '#a16207' }} /></div>
+          <div style={{ ...styles.statIcon, background: '#fef3c7' }}><MdEmojiEvents style={{ color: '#a16207' }} /></div>
           <div>
             <div style={styles.statValue}>{stats.competition}</div>
             <div style={styles.statLabel}>Compétition</div>
           </div>
         </div>
         <div style={styles.statCard}>
-          <div style={{ ...styles.statIcon, background: '#dbeafe' }}><MdPeople style={{ color: '#1e40af' }} /></div>
+          <div style={{ ...styles.statIcon, background: '#dbeafe' }}><MdBeachAccess style={{ color: '#1e40af' }} /></div>
           <div>
             <div style={styles.statValue}>{stats.leisure}</div>
             <div style={styles.statLabel}>Loisir</div>
@@ -234,14 +234,16 @@ const Groups: React.FC = () => {
                     <button
                       style={styles.actionButton}
                       onClick={() => handleOpenModal(group)}
+                      title="Modifier"
                     >
-                      <MdEdit style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Modifier
+                      <MdEdit style={{ fontSize: '18px' }} />
                     </button>
                     <button
                       style={{ ...styles.actionButton, color: '#ef4444' }}
                       onClick={() => handleDelete(group.id)}
+                      title="Supprimer"
                     >
-                      <MdDelete style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Supprimer
+                      <MdDelete style={{ fontSize: '18px' }} />
                     </button>
                   </div>
                 )}
@@ -458,15 +460,18 @@ const styles: Record<string, React.CSSProperties> = {
   },
   actionButton: {
     flex: 1,
-    padding: '8px 12px',
+    padding: '10px',
     background: 'transparent',
-    border: '2px solid #e0e0e0',
+    border: '2px solid #e5e7eb',
     borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '14px',
     color: '#667eea',
     fontWeight: '600',
     transition: 'all 0.2s',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   modalActions: {
     display: 'flex',

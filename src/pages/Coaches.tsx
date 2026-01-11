@@ -115,8 +115,8 @@ const Coaches: React.FC = () => {
     <MainLayout>
       <div style={styles.header}>
         <h1 style={styles.title}><MdSportsMartialArts style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Coachs</h1>
-        <Button onClick={() => handleOpenModal()}>
-          <MdAdd style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Nouveau coach
+        <Button onClick={() => handleOpenModal()} title="Nouveau coach">
+          <MdAdd style={{ fontSize: '20px' }} />
         </Button>
       </div>
 
@@ -150,14 +150,16 @@ const Coaches: React.FC = () => {
                   <button
                     style={styles.actionButton}
                     onClick={() => handleOpenModal(coach)}
+                    title="Modifier"
                   >
-                    <MdEdit style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Modifier
+                    <MdEdit style={{ fontSize: '18px' }} />
                   </button>
                   <button
                     style={{ ...styles.actionButton, color: '#ef4444' }}
                     onClick={() => handleDelete(coach.id)}
+                    title="Supprimer"
                   >
-                    <MdDelete style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Supprimer
+                    <MdDelete style={{ fontSize: '18px' }} />
                   </button>
                 </div>
               </div>
@@ -311,15 +313,18 @@ const styles: Record<string, React.CSSProperties> = {
   },
   actionButton: {
     flex: 1,
-    padding: '8px 12px',
+    padding: '10px',
     background: 'transparent',
-    border: '2px solid #e0e0e0',
+    border: '2px solid #e5e7eb',
     borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '14px',
     color: '#667eea',
     fontWeight: '600',
     transition: 'all 0.2s',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   modalActions: {
     display: 'flex',
