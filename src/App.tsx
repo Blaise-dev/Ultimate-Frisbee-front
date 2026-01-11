@@ -50,7 +50,7 @@ const App: React.FC = () => {
           <Route
             path="/groups"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN', 'COACH']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'COACH', 'ATHLETE']}>
                 <Groups />
               </ProtectedRoute>
             }
