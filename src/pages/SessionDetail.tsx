@@ -64,6 +64,27 @@ const SessionDetail: React.FC = () => {
         </Button>
       </div>
 
+      {/* Image de la séance en haut */}
+      <div style={styles.imageContainer}>
+        <img 
+          src={session.type === 'TRAINING' 
+            ? 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1200&h=400&fit=crop' 
+            : 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1200&h=400&fit=crop'
+          } 
+          alt={session.title}
+          style={styles.image}
+        />
+        <span
+          style={{
+            ...styles.imageBadge,
+            background: session.type === 'TRAINING' ? '#e3f2fd' : '#fce4ec',
+            color: session.type === 'TRAINING' ? '#1976d2' : '#c2185b',
+          }}
+        >
+          {session.type === 'TRAINING' ? 'Entraînement' : 'Match'}
+        </span>
+      </div>
+
       <Card>
         <div style={styles.profileHeader}>
           <div style={styles.avatar}>
@@ -71,15 +92,6 @@ const SessionDetail: React.FC = () => {
           </div>
           <div style={styles.profileInfo}>
             <h1 style={styles.name}>{session.title}</h1>
-            <span
-              style={{
-                ...styles.badge,
-                background: session.type === 'TRAINING' ? '#e3f2fd' : '#fce4ec',
-                color: session.type === 'TRAINING' ? '#1976d2' : '#c2185b',
-              }}
-            >
-              {session.type === 'TRAINING' ? 'Entraînement' : 'Match'}
-            </span>
           </div>
         </div>
 
@@ -198,6 +210,30 @@ const SessionDetail: React.FC = () => {
 const styles: Record<string, React.CSSProperties> = {
   header: {
     marginBottom: '24px',
+  },
+  imageContainer: {
+    position: 'relative',
+    width: '100%',
+    height: '350px',
+    marginBottom: '24px',
+    borderRadius: '20px',
+    overflow: 'hidden',
+    boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  imageBadge: {
+    position: 'absolute',
+    top: '20px',
+    right: '20px',
+    padding: '8px 20px',
+    borderRadius: '20px',
+    fontSize: '15px',
+    fontWeight: '600',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
   },
   loading: {
     textAlign: 'center',

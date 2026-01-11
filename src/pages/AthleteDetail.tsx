@@ -66,22 +66,26 @@ const AthleteDetail: React.FC = () => {
         </Button>
       </div>
 
+      {/* Image de l'athlète en haut */}
+      <div style={styles.imageContainer}>
+        <img 
+          src={`https://ui-avatars.com/api/?name=${athlete.firstName}+${athlete.lastName}&size=1200&background=10b981&color=fff&bold=true`}
+          alt={`${athlete.firstName} ${athlete.lastName}`}
+          style={styles.image}
+        />
+        <div style={styles.imageBadges}>
+          <span style={styles.imageBadge}>
+            {categoryLabels[athlete.category] || athlete.category}
+          </span>
+          <span style={{ ...styles.imageBadge, background: '#e0f2fe', color: '#0369a1' }}>
+            {levelLabels[athlete.level] || athlete.level}
+          </span>
+        </div>
+      </div>
+
       <Card>
         <div style={styles.profileHeader}>
-          <div style={styles.avatar}>
-            {athlete.firstName[0]}{athlete.lastName[0]}
-          </div>
-          <div style={styles.profileInfo}>
-            <h1 style={styles.name}>{athlete.firstName} {athlete.lastName}</h1>
-            <div style={styles.badges}>
-              <span style={styles.badge}>
-                {categoryLabels[athlete.category] || athlete.category}
-              </span>
-              <span style={{ ...styles.badge, background: '#e0f2fe', color: '#0369a1' }}>
-                {levelLabels[athlete.level] || athlete.level}
-              </span>
-            </div>
-          </div>
+          <h1 style={styles.name}>{athlete.firstName} {athlete.lastName}</h1>
         </div>
 
         <div style={styles.section}>
@@ -140,6 +144,37 @@ const styles: Record<string, React.CSSProperties> = {
   header: {
     marginBottom: '24px',
   },
+  imageContainer: {
+    position: 'relative',
+    width: '100%',
+    height: '350px',
+    marginBottom: '24px',
+    borderRadius: '20px',
+    overflow: 'hidden',
+    boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  imageBadges: {
+    position: 'absolute',
+    bottom: '20px',
+    right: '20px',
+    display: 'flex',
+    gap: '12px',
+  },
+  imageBadge: {
+    padding: '10px 24px',
+    borderRadius: '24px',
+    fontSize: '15px',
+    fontWeight: '600',
+    background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+    color: 'white',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+  },
   loading: {
     textAlign: 'center',
     padding: '48px',
@@ -151,48 +186,15 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#ef4444',
   },
   profileHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '24px',
     paddingBottom: '24px',
     borderBottom: '1px solid #e5e7eb',
     marginBottom: '24px',
-  },
-  avatar: {
-    width: '100px',
-    height: '100px',
-    borderRadius: '20px',
-    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-    color: 'white',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '36px',
-    fontWeight: '700',
-    boxShadow: '0 10px 25px rgba(16, 185, 129, 0.3)',
-  },
-  profileInfo: {
-    flex: 1,
   },
   name: {
     fontSize: '32px',
     fontWeight: '700',
     color: '#1f2937',
-    margin: '0 0 12px 0',
-  },
-  badges: {
-    display: 'flex',
-    gap: '12px',
-  },
-  badge: {
-    display: 'inline-block',
-    padding: '8px 20px',
-    borderRadius: '20px',
-    fontSize: '14px',
-    fontWeight: '600',
-    background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-    color: 'white',
-    boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
+    margin: '0',
   },
   section: {
     marginBottom: '32px',
