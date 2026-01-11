@@ -21,8 +21,8 @@ const Groups: React.FC = () => {
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [formData, setFormData] = useState({
     name: '',
-    category: '',
-    level: '',
+    type: '',
+    description: '',
     coachId: '',
   });
   const [searchTerm, setSearchTerm] = useState('');
@@ -53,16 +53,16 @@ const Groups: React.FC = () => {
       setSelectedGroup(group);
       setFormData({
         name: group.name,
-        category: (group as any).category || '',
-        level: (group as any).level || '',
+        type: group.type || '',
+        description: group.description || '',
         coachId: (group as any).coachId || '',
       });
     } else {
       setSelectedGroup(null);
       setFormData({
         name: '',
-        category: '',
-        level: '',
+        type: '',
+        description: '',
         coachId: '',
       });
     }
@@ -102,17 +102,10 @@ const Groups: React.FC = () => {
     }
   };
 
-  const categoryOptions = [
-    { value: 'JUNIOR', label: 'Junior' },
-    { value: 'SENIOR', label: 'Senior' },
-    { value: 'VETERAN', label: 'Vétéran' },
-  ];
-
-  const levelOptions = [
-    { value: 'BEGINNER', label: 'Débutant' },
-    { value: 'INTERMEDIATE', label: 'Intermédiaire' },
-    { value: 'ADVANCED', label: 'Avancé' },
-    { value: 'EXPERT', label: 'Expert' },
+  const groupTypeOptions = [
+    { value: 'TRAINING', label: 'Entraînement' },
+    { value: 'COMPETITION', label: 'Compétition' },
+    { value: 'LEISURE', label: 'Loisir' },
   ];
 
   if (loading) {
@@ -133,6 +126,7 @@ const Groups: React.FC = () => {
     total: groups.length,
     training: groups.filter(g => g.type === 'TRAINING').length,
     competition: groups.filter(g => g.type === 'COMPETITION').length,
+    leisure: groups.filter(g => g.type === 'LEISURE').length,
   };
 
   return (
@@ -169,6 +163,13 @@ const Groups: React.FC = () => {
             <div style={styles.statLabel}>Compétition</div>
           </div>
         </div>
+        <div style={styles.statCard}>
+          <div style={{ ...styles.statIcon, background: '#dbeafe' }}><MdPeople style={{ color: '#1e40af' }} /></div>
+          <div>
+            <div style={styles.statValue}>{stats.leisure}</div>
+            <div style={styles.statLabel}>Loisir</div>
+          </div>
+        </div>
       </div>
 
       {/* Recherche et filtres */}
@@ -194,6 +195,7 @@ const Groups: React.FC = () => {
               <option value="all">Tous les types</option>
               <option value="TRAINING">Entraînement</option>
               <option value="COMPETITION">Compétition</option>
+              <option value="LEISURE">Loisir</option>
             </select>
           </div>
         </div>
@@ -263,18 +265,17 @@ const Groups: React.FC = () => {
             required
           />
           <Input
-            label="Catégorie"
-            value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            options={categoryOptions}
+            label="Type de groupe"
+            value={formData.type}
+            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+            options={groupTypeOptions}
             required
           />
           <Input
-            label="Niveau"
-            value={formData.level}
-            onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-            options={levelOptions}
-            required
+            label="Description"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            placeholder="Description du groupe (optionnel)"
           />
           <Input
             label="Coach"
