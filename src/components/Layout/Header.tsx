@@ -32,8 +32,9 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'space-between',
     alignItems: 'center',
     boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-    marginLeft: '260px',
+    marginLeft: '0',
     borderBottom: '1px solid #e5e7eb',
+    width: '100%',
   },
   userInfo: {
     display: 'flex',

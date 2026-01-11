@@ -4,11 +4,13 @@ import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import Modal from '../components/UI/Modal';
 import Input from '../components/UI/Input';
+import { useAuth } from '../contexts/AuthContext';
 import { athleteService } from '../services/athlete.service';
 import { Athlete } from '../types';
 import { MdPeople, MdAdd, MdEdit, MdDelete } from 'react-icons/md';
 
 const Athletes: React.FC = () => {
+  const { user } = useAuth();
   const [athletes, setAthletes] = useState<Athlete[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -10,10 +10,10 @@ const Sidebar: React.FC = () => {
   const menuItems = [
     { path: '/dashboard', label: 'Tableau de bord', icon: <MdDashboard />, roles: ['ADMIN', 'COACH', 'ATHLETE'] },
     { path: '/sessions', label: 'Séances', icon: <MdEventNote />, roles: ['ADMIN', 'COACH', 'ATHLETE'] },
+    { path: '/groups', label: 'Mes Groupes', icon: <MdGroup />, roles: ['ATHLETE'] },
     { path: '/athletes', label: 'Athlètes', icon: <MdPeople />, roles: ['ADMIN', 'COACH'] },
-    { path: '/coaches', label: 'Coachs', icon: <MdSportsMartialArts />, roles: ['ADMIN'] },
     { path: '/groups', label: 'Groupes', icon: <MdGroup />, roles: ['ADMIN', 'COACH'] },
-    { path: '/activities', label: 'Activités', icon: <MdSportsBaseball />, roles: ['ADMIN', 'COACH'] },
+    { path: '/coaches', label: 'Coachs', icon: <MdSportsMartialArts />, roles: ['ADMIN'] },
   ];
 
   const filteredMenuItems = menuItems.filter(item => 

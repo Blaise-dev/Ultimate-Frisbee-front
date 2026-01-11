@@ -4,12 +4,14 @@ import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import Modal from '../components/UI/Modal';
 import Input from '../components/UI/Input';
+import { useAuth } from '../contexts/AuthContext';
 import { sessionService } from '../services/session.service';
 import { coachService } from '../services/coach.service';
 import { Session, Coach } from '../types';
 import { MdEventNote, MdAdd, MdEdit, MdDelete, MdLocationOn, MdSchedule, MdSportsScore } from 'react-icons/md';
 
 const Sessions: React.FC = () => {
+  const { user } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [loading, setLoading] = useState(true);
@@ -139,9 +141,11 @@ const Sessions: React.FC = () => {
     <MainLayout>
       <div style={styles.header}>
         <h1 style={styles.title}><MdEventNote style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Séances</h1>
-        <Button onClick={() => handleOpenModal()}>
-          <MdAdd style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Nouvelle séance
-        </Button>
+        {(user?.role === 'ADMIN' || user?.role === 'COACH') && (
+          <Button onClick={() => handleOpenModal()}>
+            <MdAdd style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Nouvelle séance
+          </Button>
+        )}
       </div>
 
       <Card>
@@ -178,20 +182,22 @@ const Sessions: React.FC = () => {
                     <p style={styles.description}>{session.description}</p>
                   )}
                 </div>
-                <div style={styles.cardActions}>
-                  <button
-                    style={styles.actionButton}
-                    onClick={() => handleOpenModal(session)}
-                  >
-                    <MdEdit style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Modifier
-                  </button>
-                  <button
-                    style={{ ...styles.actionButton, color: '#ef4444' }}
-                    onClick={() => handleDelete(session.id)}
-                  >
-                    <MdDelete style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Supprimer
-                  </button>
-                </div>
+                {(user?.role === 'ADMIN' || user?.role === 'COACH') && (
+                  <div style={styles.cardActions}>
+                    <button
+                      style={styles.actionButton}
+                      onClick={() => handleOpenModal(session)}
+                    >
+                      <MdEdit style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Modifier
+                    </button>
+                    <button
+                      style={{ ...styles.actionButton, color: '#ef4444' }}
+                      onClick={() => handleDelete(session.id)}
+                    >
+                      <MdDelete style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Supprimer
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>

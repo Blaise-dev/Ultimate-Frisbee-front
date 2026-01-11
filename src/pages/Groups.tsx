@@ -4,12 +4,14 @@ import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import Modal from '../components/UI/Modal';
 import Input from '../components/UI/Input';
+import { useAuth } from '../contexts/AuthContext';
 import { groupService } from '../services/group.service';
 import { coachService } from '../services/coach.service';
 import { Group, Coach } from '../types';
 import { MdGroup, MdAdd, MdEdit, MdDelete, MdSportsMartialArts } from 'react-icons/md';
 
 const Groups: React.FC = () => {
+  const { user } = useAuth();
   const [groups, setGroups] = useState<Group[]>([]);
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [loading, setLoading] = useState(true);
@@ -121,9 +123,11 @@ const Groups: React.FC = () => {
     <MainLayout>
       <div style={styles.header}>
         <h1 style={styles.title}><MdGroup style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Groupes</h1>
-        <Button onClick={() => handleOpenModal()}>
-          <MdAdd style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Nouveau groupe
-        </Button>
+        {(user?.role === 'ADMIN' || user?.role === 'COACH') && (
+          <Button onClick={() => handleOpenModal()}>
+            <MdAdd style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Nouveau groupe
+          </Button>
+        )}
       </div>
 
       <Card>
@@ -149,20 +153,22 @@ const Groups: React.FC = () => {
                     <p style={styles.description}>{group.description}</p>
                   )}
                 </div>
-                <div style={styles.cardActions}>
-                  <button
-                    style={styles.actionButton}
-                    onClick={() => handleOpenModal(group)}
-                  >
-                    <MdEdit style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Modifier
-                  </button>
-                  <button
-                    style={{ ...styles.actionButton, color: '#ef4444' }}
-                    onClick={() => handleDelete(group.id)}
-                  >
-                    <MdDelete style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Supprimer
-                  </button>
-                </div>
+                {(user?.role === 'ADMIN' || user?.role === 'COACH') && (
+                  <div style={styles.cardActions}>
+                    <button
+                      style={styles.actionButton}
+                      onClick={() => handleOpenModal(group)}
+                    >
+                      <MdEdit style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Modifier
+                    </button>
+                    <button
+                      style={{ ...styles.actionButton, color: '#ef4444' }}
+                      onClick={() => handleDelete(group.id)}
+                    >
+                      <MdDelete style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Supprimer
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
