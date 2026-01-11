@@ -9,7 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { groupService } from '../services/group.service';
 import { coachService } from '../services/coach.service';
 import { Group, Coach } from '../types';
-import { MdGroup, MdAdd, MdEdit, MdDelete, MdSportsMartialArts } from 'react-icons/md';
+import { MdGroup, MdAdd, MdEdit, MdDelete, MdSportsMartialArts, MdSearch, MdFilterList, MdPeople } from 'react-icons/md';
 
 const Groups: React.FC = () => {
   const { user } = useAuth();
@@ -25,6 +25,8 @@ const Groups: React.FC = () => {
     level: '',
     coachId: '',
   });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState<string>('all');
 
   const fetchData = async () => {
     try {
@@ -121,6 +123,18 @@ const Groups: React.FC = () => {
     );
   }
 
+  const filteredGroups = groups.filter(group => {
+    const matchesSearch = group.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === 'all' || group.type === filterType;
+    return matchesSearch && matchesType;
+  });
+
+  const stats = {
+    total: groups.length,
+    training: groups.filter(g => g.type === 'TRAINING').length,
+    competition: groups.filter(g => g.type === 'COMPETITION').length,
+  };
+
   return (
     <MainLayout>
       <div style={styles.header}>
@@ -132,12 +146,67 @@ const Groups: React.FC = () => {
         )}
       </div>
 
+      {/* Statistiques */}
+      <div style={styles.statsGrid}>
+        <div style={styles.statCard}>
+          <div style={styles.statIcon}><MdGroup /></div>
+          <div>
+            <div style={styles.statValue}>{stats.total}</div>
+            <div style={styles.statLabel}>Total groupes</div>
+          </div>
+        </div>
+        <div style={styles.statCard}>
+          <div style={{ ...styles.statIcon, background: '#dcfce7' }}><MdSportsMartialArts style={{ color: '#15803d' }} /></div>
+          <div>
+            <div style={styles.statValue}>{stats.training}</div>
+            <div style={styles.statLabel}>Entraînement</div>
+          </div>
+        </div>
+        <div style={styles.statCard}>
+          <div style={{ ...styles.statIcon, background: '#fef3c7' }}><MdPeople style={{ color: '#a16207' }} /></div>
+          <div>
+            <div style={styles.statValue}>{stats.competition}</div>
+            <div style={styles.statLabel}>Compétition</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Recherche et filtres */}
       <Card>
-        {groups.length === 0 ? (
-          <div style={styles.empty}>Aucun groupe créé</div>
+        <div style={styles.filterBar}>
+          <div style={styles.searchBox}>
+            <MdSearch style={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Rechercher un groupe..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={styles.searchInput}
+            />
+          </div>
+          <div style={styles.filters}>
+            <MdFilterList style={{ marginRight: '8px', color: '#6b7280' }} />
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              style={styles.filterSelect}
+            >
+              <option value="all">Tous les types</option>
+              <option value="TRAINING">Entraînement</option>
+              <option value="COMPETITION">Compétition</option>
+            </select>
+          </div>
+        </div>
+      </Card>
+
+      <Card>
+        {filteredGroups.length === 0 ? (
+          <div style={styles.empty}>
+            {groups.length === 0 ? 'Aucun groupe créé' : 'Aucun résultat trouvé'}
+          </div>
         ) : (
           <div style={styles.grid}>
-            {groups.map((group) => (
+            {filteredGroups.map((group) => (
               <div key={group.id} style={styles.groupCard}>
                 <div 
                   style={styles.groupHeader}
@@ -242,7 +311,86 @@ const styles: Record<string, React.CSSProperties> = {
     margin: 0,
     fontSize: '28px',
     fontWeight: '700',
-    color: '#333',
+    color: '#1a1f36',
+  },
+  statsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+    gap: '16px',
+    marginBottom: '24px',
+  },
+  statCard: {
+    background: 'white',
+    borderRadius: '12px',
+    padding: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    border: '1px solid #e5e7eb',
+  },
+  statIcon: {
+    width: '48px',
+    height: '48px',
+    borderRadius: '10px',
+    background: '#eff6ff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '24px',
+    color: '#2563eb',
+  },
+  statValue: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#1a1f36',
+  },
+  statLabel: {
+    fontSize: '13px',
+    color: '#6b7280',
+    marginTop: '4px',
+  },
+  filterBar: {
+    display: 'flex',
+    gap: '16px',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+  },
+  searchBox: {
+    flex: '1',
+    minWidth: '250px',
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  searchIcon: {
+    position: 'absolute',
+    left: '12px',
+    color: '#9ca3af',
+    fontSize: '20px',
+    pointerEvents: 'none',
+  },
+  searchInput: {
+    width: '100%',
+    padding: '10px 12px 10px 40px',
+    borderRadius: '8px',
+    border: '1px solid #e5e7eb',
+    fontSize: '14px',
+    outline: 'none',
+  },
+  filters: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  filterSelect: {
+    padding: '10px 12px',
+    borderRadius: '8px',
+    border: '1px solid #e5e7eb',
+    fontSize: '14px',
+    outline: 'none',
+    cursor: 'pointer',
+    background: 'white',
   },
   loading: {
     textAlign: 'center',

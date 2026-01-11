@@ -5,13 +5,11 @@ import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import Modal from '../components/UI/Modal';
 import Input from '../components/UI/Input';
-import { useAuth } from '../contexts/AuthContext';
 import { athleteService } from '../services/athlete.service';
 import { Athlete } from '../types';
-import { MdPeople, MdAdd, MdEdit, MdDelete } from 'react-icons/md';
+import { MdPeople, MdAdd, MdEdit, MdDelete, MdSearch, MdFilterList, MdTrendingUp, MdEmojiEvents } from 'react-icons/md';
 
 const Athletes: React.FC = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [athletes, setAthletes] = useState<Athlete[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,6 +23,9 @@ const Athletes: React.FC = () => {
     category: '',
     level: '',
   });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [filterLevel, setFilterLevel] = useState<string>('all');
 
   const fetchAthletes = async () => {
     try {
@@ -126,6 +127,22 @@ const Athletes: React.FC = () => {
     );
   }
 
+  const filteredAthletes = athletes.filter(athlete => {
+    const matchesSearch = 
+      athlete.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      athlete.lastName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = filterCategory === 'all' || athlete.category === filterCategory;
+    const matchesLevel = filterLevel === 'all' || athlete.level === filterLevel;
+    return matchesSearch && matchesCategory && matchesLevel;
+  });
+
+  const stats = {
+    total: athletes.length,
+    juniors: athletes.filter(a => a.category === 'JUNIOR').length,
+    seniors: athletes.filter(a => a.category === 'SENIOR').length,
+    veterans: athletes.filter(a => a.category === 'VETERAN').length,
+  };
+
   return (
     <MainLayout>
       <div style={styles.header}>
@@ -135,12 +152,86 @@ const Athletes: React.FC = () => {
         </Button>
       </div>
 
+      {/* Statistiques */}
+      <div style={styles.statsGrid}>
+        <div style={styles.statCard}>
+          <div style={styles.statIcon}><MdPeople /></div>
+          <div>
+            <div style={styles.statValue}>{stats.total}</div>
+            <div style={styles.statLabel}>Total athlètes</div>
+          </div>
+        </div>
+        <div style={styles.statCard}>
+          <div style={{ ...styles.statIcon, background: '#dbeafe' }}><MdEmojiEvents style={{ color: '#1e40af' }} /></div>
+          <div>
+            <div style={styles.statValue}>{stats.juniors}</div>
+            <div style={styles.statLabel}>Juniors</div>
+          </div>
+        </div>
+        <div style={styles.statCard}>
+          <div style={{ ...styles.statIcon, background: '#dcfce7' }}><MdTrendingUp style={{ color: '#15803d' }} /></div>
+          <div>
+            <div style={styles.statValue}>{stats.seniors}</div>
+            <div style={styles.statLabel}>Seniors</div>
+          </div>
+        </div>
+        <div style={styles.statCard}>
+          <div style={{ ...styles.statIcon, background: '#fef3c7' }}><MdEmojiEvents style={{ color: '#a16207' }} /></div>
+          <div>
+            <div style={styles.statValue}>{stats.veterans}</div>
+            <div style={styles.statLabel}>Vétérans</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Recherche et filtres */}
       <Card>
-        {athletes.length === 0 ? (
-          <div style={styles.empty}>Aucun athlète enregistré</div>
+        <div style={styles.filterBar}>
+          <div style={styles.searchBox}>
+            <MdSearch style={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Rechercher un athlète..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={styles.searchInput}
+            />
+          </div>
+          <div style={styles.filters}>
+            <MdFilterList style={{ marginRight: '8px', color: '#6b7280' }} />
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              style={styles.filterSelect}
+            >
+              <option value="all">Toutes catégories</option>
+              <option value="JUNIOR">Junior</option>
+              <option value="SENIOR">Senior</option>
+              <option value="VETERAN">Vétéran</option>
+            </select>
+            <select
+              value={filterLevel}
+              onChange={(e) => setFilterLevel(e.target.value)}
+              style={styles.filterSelect}
+            >
+              <option value="all">Tous niveaux</option>
+              <option value="BEGINNER">Débutant</option>
+              <option value="INTERMEDIATE">Intermédiaire</option>
+              <option value="ADVANCED">Avancé</option>
+              <option value="EXPERT">Expert</option>
+            </select>
+          </div>
+        </div>
+      </Card>
+
+      <Card>
+        {filteredAthletes.length === 0 ? (
+          <div style={styles.empty}>
+            {athletes.length === 0 ? 'Aucun athlète enregistré' : 'Aucun résultat trouvé'}
+          </div>
         ) : (
           <div style={styles.grid}>
-            {athletes.map((athlete) => (
+            {filteredAthletes.map((athlete) => (
               <div key={athlete.id} style={styles.athleteCard}>
                 <div 
                   style={styles.athleteHeader}

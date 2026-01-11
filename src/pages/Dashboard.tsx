@@ -80,23 +80,29 @@ const Dashboard: React.FC = () => {
 
       {/* Statistiques */}
       <div style={styles.statsGrid}>
-        <div style={styles.statCard}>
-          <div style={styles.statIcon}><MdEventNote /></div>
+        <div style={{ ...styles.statCard, borderLeft: '4px solid #4f9eff' }}>
+          <div style={{ ...styles.statIcon, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+            <MdEventNote style={{ color: 'white' }} />
+          </div>
           <div>
             <div style={styles.statValue}>{stats.totalSessions}</div>
             <div style={styles.statLabel}>Séances totales</div>
           </div>
         </div>
-        <div style={styles.statCard}>
-          <div style={styles.statIcon}><MdAccessTime /></div>
+        <div style={{ ...styles.statCard, borderLeft: '4px solid #10b981' }}>
+          <div style={{ ...styles.statIcon, background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>
+            <MdAccessTime style={{ color: 'white' }} />
+          </div>
           <div>
             <div style={styles.statValue}>{stats.upcomingSessions}</div>
             <div style={styles.statLabel}>Séances à venir</div>
           </div>
         </div>
         {(user?.role === 'COACH' || user?.role === 'ADMIN') && (
-          <div style={styles.statCard}>
-            <div style={styles.statIcon}><MdPeople /></div>
+          <div style={{ ...styles.statCard, borderLeft: '4px solid #f59e0b' }}>
+            <div style={{ ...styles.statIcon, background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>
+              <MdPeople style={{ color: 'white' }} />
+            </div>
             <div>
               <div style={styles.statValue}>{stats.totalAthletes}</div>
               <div style={styles.statLabel}>Athlètes</div>
@@ -195,32 +201,34 @@ const styles: Record<string, React.CSSProperties> = {
   statCard: {
     background: 'white',
     padding: '24px',
-    borderRadius: '12px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+    borderRadius: '16px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
     display: 'flex',
     alignItems: 'center',
-    gap: '16px',
+    gap: '20px',
+    transition: 'all 0.3s ease',
   },
   statIcon: {
-    fontSize: '32px',
-    width: '60px',
-    height: '60px',
-    borderRadius: '12px',
-    background: 'linear-gradient(135deg, #4f9eff 0%, #3b7dd6 100%)',
+    fontSize: '28px',
+    width: '64px',
+    height: '64px',
+    borderRadius: '16px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#ffffff',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
   },
   statValue: {
-    fontSize: '28px',
+    fontSize: '32px',
     fontWeight: '700',
-    color: '#333',
+    color: '#1a1f36',
+    lineHeight: '1',
   },
   statLabel: {
     fontSize: '14px',
-    color: '#999',
-    marginTop: '4px',
+    color: '#6b7280',
+    marginTop: '8px',
+    fontWeight: '500',
   },
   content: {
     display: 'flex',
@@ -229,82 +237,90 @@ const styles: Record<string, React.CSSProperties> = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-    gap: '16px',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+    gap: '20px',
   },
   card: {
-    padding: '16px',
-    border: '2px solid #f0f0f0',
-    borderRadius: '12px',
+    padding: '20px',
+    border: '2px solid #e5e7eb',
+    borderRadius: '16px',
+    transition: 'all 0.3s ease',
+    background: 'white',
   },
   cardHeader: {
     marginBottom: '12px',
   },
   badge: {
-    padding: '4px 12px',
-    borderRadius: '12px',
-    fontSize: '12px',
+    padding: '6px 16px',
+    borderRadius: '20px',
+    fontSize: '13px',
     fontWeight: '600',
     display: 'inline-block',
   },
   cardTitle: {
-    fontSize: '18px',
-    fontWeight: '600',
-    margin: '0 0 12px 0',
-    color: '#333',
+    fontSize: '19px',
+    fontWeight: '700',
+    margin: '0 0 16px 0',
+    color: '#1a1f36',
   },
   cardText: {
-    margin: '8px 0',
+    margin: '10px 0',
     fontSize: '14px',
-    color: '#666',
+    color: '#6b7280',
+    display: 'flex',
+    alignItems: 'center',
   },
   cardDescription: {
     marginTop: '12px',
     fontSize: '14px',
-    color: '#888',
+    color: '#9ca3af',
     fontStyle: 'italic',
   },
   athleteGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
     gap: '16px',
   },
   athleteCard: {
-    padding: '16px',
-    border: '2px solid #f0f0f0',
-    borderRadius: '12px',
+    padding: '20px',
+    border: '2px solid #e5e7eb',
+    borderRadius: '16px',
     display: 'flex',
     alignItems: 'center',
     gap: '16px',
+    transition: 'all 0.3s ease',
+    background: 'white',
   },
   athleteAvatar: {
-    width: '50px',
-    height: '50px',
-    borderRadius: '50%',
+    width: '56px',
+    height: '56px',
+    borderRadius: '14px',
     background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
     color: 'white',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '18px',
-    fontWeight: '600',
+    fontSize: '20px',
+    fontWeight: '700',
     flexShrink: 0,
+    boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
   },
   athleteName: {
-    margin: '0 0 4px 0',
+    margin: '0 0 6px 0',
     fontSize: '16px',
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: '700',
+    color: '#1a1f36',
   },
   athleteInfo: {
     margin: '4px 0',
     fontSize: '14px',
-    color: '#666',
+    color: '#6b7280',
   },
   athleteGroups: {
-    margin: '4px 0',
+    margin: '6px 0 0 0',
     fontSize: '12px',
-    color: '#999',
+    color: '#9ca3af',
+    fontWeight: '500',
   },
   loading: {
     textAlign: 'center',

@@ -12,6 +12,7 @@ import Groups from './pages/Groups';
 import GroupDetail from './pages/GroupDetail';
 import Sessions from './pages/Sessions';
 import SessionDetail from './pages/SessionDetail';
+import './styles/animations.css';
 
 const App: React.FC = () => {
   return (

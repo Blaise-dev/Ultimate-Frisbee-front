@@ -17,7 +17,9 @@ const CoachDetail: React.FC = () => {
     const fetchCoach = async () => {
       if (!id) return;
       try {
+        console.log('Fetching coach with ID:', id);
         const data = await coachService.getCoachById(id);
+        console.log('Coach data received:', data);
         setCoach(data);
       } catch (error) {
         console.error('Erreur lors du chargement:', error);
