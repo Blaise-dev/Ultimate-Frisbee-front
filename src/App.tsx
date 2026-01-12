@@ -15,6 +15,7 @@ import Sessions from './pages/Sessions';
 import SessionDetail from './pages/SessionDetail';
 import Profile from './pages/Profile';
 import UserManagement from './pages/UserManagement';
+import TrainingLoad from './pages/TrainingLoad';
 import './styles/animations.css';
 
 const App: React.FC = () => {
@@ -109,6 +110,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/training-load/:athleteId"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'COACH', 'ATHLETE']}>
+                <TrainingLoad />
               </ProtectedRoute>
             }
           />
