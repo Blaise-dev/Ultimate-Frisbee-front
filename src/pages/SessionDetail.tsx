@@ -5,7 +5,7 @@ import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import { sessionService } from '../services/session.service';
 import { Session } from '../types';
-import { MdArrowBack, MdEventNote, MdLocationOn, MdSchedule, MdSportsScore, MdPeople } from 'react-icons/md';
+import { MdArrowBack, MdLocationOn, MdSchedule, MdSportsScore, MdPeople, MdAccessTime } from 'react-icons/md';
 
 const SessionDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -74,26 +74,27 @@ const SessionDetail: React.FC = () => {
           alt={session.title}
           style={styles.image}
         />
-        <span
-          style={{
-            ...styles.imageBadge,
-            background: session.type === 'TRAINING' ? '#e3f2fd' : '#fce4ec',
-            color: session.type === 'TRAINING' ? '#1976d2' : '#c2185b',
-          }}
-        >
-          {session.type === 'TRAINING' ? 'Entraînement' : 'Match'}
-        </span>
+        <div style={styles.imageOverlay}></div>
+        <div style={styles.imageContent}>
+          <span
+            style={{
+              ...styles.imageBadge,
+              background: session.type === 'TRAINING' ? 'rgba(25, 118, 210, 0.95)' : 'rgba(194, 24, 91, 0.95)',
+            }}
+          >
+            {session.type === 'TRAINING' ? 'Entraînement' : 'Match'}
+          </span>
+          <h1 style={styles.imageTitle}>{session.title}</h1>
+          {session.location && (
+            <p style={styles.imageSubtitle}>
+              <MdLocationOn style={{ verticalAlign: 'middle', marginRight: '6px' }} />
+              {session.location}
+            </p>
+          )}
+        </div>
       </div>
 
       <Card>
-        <div style={styles.profileHeader}>
-          <div style={styles.avatar}>
-            <MdEventNote style={{ fontSize: '36px' }} />
-          </div>
-          <div style={styles.profileInfo}>
-            <h1 style={styles.name}>{session.title}</h1>
-          </div>
-        </div>
 
         {session.description && (
           <div style={styles.descriptionSection}>
@@ -214,26 +215,58 @@ const styles: Record<string, React.CSSProperties> = {
   imageContainer: {
     position: 'relative',
     width: '100%',
-    height: '350px',
-    marginBottom: '24px',
-    borderRadius: '20px',
+    height: '420px',
+    marginBottom: '32px',
+    borderRadius: '24px',
     overflow: 'hidden',
-    boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+    boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
   },
   image: {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
   },
-  imageBadge: {
+  imageOverlay: {
     position: 'absolute',
-    top: '20px',
-    right: '20px',
-    padding: '8px 20px',
-    borderRadius: '20px',
-    fontSize: '15px',
-    fontWeight: '600',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%)',
+    zIndex: 1,
+  },
+  imageContent: {
+    position: 'absolute',
+    bottom: '32px',
+    left: '32px',
+    right: '32px',
+    zIndex: 2,
+  },
+  imageTitle: {
+    fontSize: '42px',
+    fontWeight: '800',
+    color: 'white',
+    margin: '0 0 12px 0',
+    textShadow: '0 4px 12px rgba(0,0,0,0.4)',
+  },
+  imageSubtitle: {
+    fontSize: '18px',
+    color: 'rgba(255,255,255,0.95)',
+    margin: '0',
+    display: 'flex',
+    alignItems: 'center',
+    textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+  },
+  imageBadge: {
+    display: 'inline-block',
+    padding: '10px 24px',
+    borderRadius: '24px',
+    fontSize: '14px',
+    fontWeight: '700',
+    color: 'white',
+    marginBottom: '16px',
+    backdropFilter: 'blur(10px)',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
   },
   loading: {
     textAlign: 'center',
@@ -246,86 +279,66 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#ef4444',
   },
   profileHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '24px',
-    paddingBottom: '24px',
-    borderBottom: '1px solid #e5e7eb',
     marginBottom: '24px',
-  },
-  avatar: {
-    width: '80px',
-    height: '80px',
-    borderRadius: '16px',
-    background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
-    color: 'white',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  name: {
-    fontSize: '28px',
-    fontWeight: '700',
-    color: '#1f2937',
-    margin: '0 0 12px 0',
-  },
-  badge: {
-    display: 'inline-block',
-    padding: '4px 12px',
-    borderRadius: '16px',
-    fontSize: '13px',
-    fontWeight: '600',
   },
   descriptionSection: {
     marginBottom: '24px',
-    padding: '16px',
-    background: '#f9fafb',
-    borderRadius: '8px',
+    padding: '24px',
+    background: 'linear-gradient(135deg, #f0fdf4 0%, #f9fafb 100%)',
+    borderRadius: '16px',
+    border: '2px solid #d1fae5',
   },
   description: {
     margin: 0,
-    color: '#4b5563',
-    lineHeight: '1.6',
+    color: '#374151',
+    lineHeight: '1.8',
+    fontSize: '15px',
   },
   section: {
     marginBottom: '32px',
   },
   sectionTitle: {
-    fontSize: '18px',
-    fontWeight: '600',
+    fontSize: '22px',
+    fontWeight: '700',
     color: '#1f2937',
-    marginBottom: '16px',
+    marginBottom: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
   },
   infoGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '16px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: '20px',
   },
   infoItem: {
     display: 'flex',
     alignItems: 'flex-start',
-    gap: '12px',
-    padding: '16px',
-    background: '#f9fafb',
-    borderRadius: '8px',
+    gap: '16px',
+    padding: '24px',
+    background: 'linear-gradient(135deg, #f9fafb 0%, #ffffff 100%)',
+    borderRadius: '16px',
+    border: '2px solid #e5e7eb',
     cursor: 'pointer',
-    transition: 'all 0.2s',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
   },
   infoIcon: {
-    fontSize: '20px',
-    color: '#4f9eff',
+    fontSize: '28px',
+    color: '#10b981',
     marginTop: '2px',
+    flexShrink: 0,
   },
   infoLabel: {
     fontSize: '13px',
     color: '#6b7280',
-    marginBottom: '4px',
+    marginBottom: '6px',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
   },
   infoValue: {
-    fontSize: '15px',
+    fontSize: '16px',
     fontWeight: '600',
     color: '#1f2937',
   },

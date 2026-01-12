@@ -144,9 +144,9 @@ const Sessions: React.FC = () => {
       <div style={styles.header}>
         <h1 style={styles.title}><MdEventNote style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Séances</h1>
         {(user?.role === 'ADMIN' || user?.role === 'COACH') && (
-          <Button onClick={() => handleOpenModal()} title="Nouvelle séance">
-            <MdAdd style={{ fontSize: '20px' }} />
-          </Button>
+          <button onClick={() => handleOpenModal()} style={styles.addButton} title="Nouvelle séance">
+            <MdAdd style={{ fontSize: '24px' }} />
+          </button>
         )}
       </div>
 

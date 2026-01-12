@@ -115,9 +115,9 @@ const Coaches: React.FC = () => {
     <MainLayout>
       <div style={styles.header}>
         <h1 style={styles.title}><MdSportsMartialArts style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Coachs</h1>
-        <Button onClick={() => handleOpenModal()} title="Nouveau coach">
-          <MdAdd style={{ fontSize: '20px' }} />
-        </Button>
+        <button onClick={() => handleOpenModal()} style={styles.addButton} title="Nouveau coach">
+          <MdAdd style={{ fontSize: '24px' }} />
+        </button>
       </div>
 
       <Card>

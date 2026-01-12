@@ -147,9 +147,9 @@ const Athletes: React.FC = () => {
     <MainLayout>
       <div style={styles.header}>
         <h1 style={styles.title}><MdPeople style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Athlètes</h1>
-        <Button onClick={() => handleOpenModal()} title="Nouvel athlète">
+        <button onClick={() => handleOpenModal()} style={styles.addButton} title="Nouvel athlète">
           <MdAdd style={{ fontSize: '20px' }} />
-        </Button>
+        </button>
       </div>
 
       {/* Statistiques */}

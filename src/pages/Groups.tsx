@@ -134,9 +134,9 @@ const Groups: React.FC = () => {
       <div style={styles.header}>
         <h1 style={styles.title}><MdGroup style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Groupes</h1>
         {(user?.role === 'ADMIN' || user?.role === 'COACH') && (
-          <Button onClick={() => handleOpenModal()} title="Nouveau groupe">
-            <MdAdd style={{ fontSize: '20px' }} />
-          </Button>
+          <button onClick={() => handleOpenModal()} style={styles.addButton} title="Nouveau groupe">
+            <MdAdd style={{ fontSize: '24px' }} />
+          </button>
         )}
       </div>
 

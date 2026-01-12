@@ -73,20 +73,21 @@ const AthleteDetail: React.FC = () => {
           alt={`${athlete.firstName} ${athlete.lastName}`}
           style={styles.image}
         />
-        <div style={styles.imageBadges}>
-          <span style={styles.imageBadge}>
-            {categoryLabels[athlete.category] || athlete.category}
-          </span>
-          <span style={{ ...styles.imageBadge, background: '#e0f2fe', color: '#0369a1' }}>
-            {levelLabels[athlete.level] || athlete.level}
-          </span>
+        <div style={styles.imageOverlay}></div>
+        <div style={styles.imageContent}>
+          <h1 style={styles.imageTitle}>{athlete.firstName} {athlete.lastName}</h1>
+          <div style={styles.imageBadges}>
+            <span style={styles.imageBadge}>
+              {categoryLabels[athlete.category] || athlete.category}
+            </span>
+            <span style={{ ...styles.imageBadge, background: 'rgba(224, 242, 254, 0.95)', color: '#0369a1' }}>
+              {levelLabels[athlete.level] || athlete.level}
+            </span>
+          </div>
         </div>
       </div>
 
       <Card>
-        <div style={styles.profileHeader}>
-          <h1 style={styles.name}>{athlete.firstName} {athlete.lastName}</h1>
-        </div>
 
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>Informations</h2>
@@ -147,11 +148,11 @@ const styles: Record<string, React.CSSProperties> = {
   imageContainer: {
     position: 'relative',
     width: '100%',
-    height: '350px',
-    marginBottom: '24px',
-    borderRadius: '20px',
+    height: '420px',
+    marginBottom: '32px',
+    borderRadius: '24px',
     overflow: 'hidden',
-    boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+    boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
     background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
   },
   image: {
@@ -159,21 +160,43 @@ const styles: Record<string, React.CSSProperties> = {
     height: '100%',
     objectFit: 'cover',
   },
-  imageBadges: {
+  imageOverlay: {
     position: 'absolute',
-    bottom: '20px',
-    right: '20px',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%)',
+    zIndex: 1,
+  },
+  imageContent: {
+    position: 'absolute',
+    bottom: '32px',
+    left: '32px',
+    right: '32px',
+    zIndex: 2,
+  },
+  imageTitle: {
+    fontSize: '42px',
+    fontWeight: '800',
+    color: 'white',
+    margin: '0 0 16px 0',
+    textShadow: '0 4px 12px rgba(0,0,0,0.4)',
+  },
+  imageBadges: {
     display: 'flex',
     gap: '12px',
+    flexWrap: 'wrap',
   },
   imageBadge: {
     padding: '10px 24px',
     borderRadius: '24px',
-    fontSize: '15px',
-    fontWeight: '600',
-    background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+    fontSize: '14px',
+    fontWeight: '700',
+    background: 'rgba(139, 92, 246, 0.95)',
     color: 'white',
-    boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+    backdropFilter: 'blur(10px)',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
   },
   loading: {
     textAlign: 'center',
@@ -186,15 +209,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#ef4444',
   },
   profileHeader: {
-    paddingBottom: '24px',
-    borderBottom: '1px solid #e5e7eb',
     marginBottom: '24px',
-  },
-  name: {
-    fontSize: '32px',
-    fontWeight: '700',
-    color: '#1f2937',
-    margin: '0',
   },
   section: {
     marginBottom: '32px',
@@ -217,16 +232,18 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'flex-start',
     gap: '16px',
-    padding: '20px',
-    background: '#ffffff',
-    borderRadius: '12px',
-    border: '2px solid #f3f4f6',
+    padding: '24px',
+    background: 'linear-gradient(135deg, #f9fafb 0%, #ffffff 100%)',
+    borderRadius: '16px',
+    border: '2px solid #e5e7eb',
     transition: 'all 0.3s ease',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
   },
   infoIcon: {
-    fontSize: '24px',
-    color: '#4f9eff',
+    fontSize: '28px',
+    color: '#10b981',
     marginTop: '2px',
+    flexShrink: 0,
   },
   infoLabel: {
     fontSize: '13px',
