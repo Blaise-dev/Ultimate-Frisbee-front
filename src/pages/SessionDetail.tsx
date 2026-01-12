@@ -255,7 +255,7 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: '24px',
   },
   addPerfButton: {
-    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
     color: 'white',
     border: 'none',
   },

@@ -7,6 +7,7 @@ interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'danger';
   disabled?: boolean;
   fullWidth?: boolean;
+  style?: React.CSSProperties;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -16,6 +17,7 @@ const Button: React.FC<ButtonProps> = ({
   variant = 'primary',
   disabled = false,
   fullWidth = false,
+  style,
 }) => {
   const variantStyles = {
     primary: {
@@ -47,6 +49,7 @@ const Button: React.FC<ButtonProps> = ({
         ...variantStyles[variant],
         ...(fullWidth ? styles.fullWidth : {}),
         ...(disabled ? styles.disabled : {}),
+        ...style,
       }}
     >
       {children}

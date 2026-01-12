@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { MdCameraAlt, MdPerson, MdEmail, MdArrowBack, MdAdminPanelSettings, MdSportsHandball, MdVerified, MdAssessment } from 'react-icons/md';
+import { MdCameraAlt, MdPerson, MdEmail, MdArrowBack, MdAdminPanelSettings, MdSportsHandball, MdVerified, MdAssessment, MdEmojiEvents } from 'react-icons/md';
 import Toast from '../components/UI/Toast';
 import { useToast } from '../hooks/useToast';
 
@@ -18,6 +18,20 @@ interface ProfileData {
   } | null;
 }
 
+interface MatchPerformance {
+  sessionId: string;
+  sessionTitle: string;
+  sessionDate: string;
+  stats: {
+    points: number;
+    assists: number;
+    blocks: number;
+    catches: number;
+    turnovers: number;
+  };
+  score: number;
+}
+
 export default function Profile() {
   const navigate = useNavigate();
   const toast = useToast();
@@ -28,12 +42,19 @@ export default function Profile() {
   const [lastName, setLastName] = useState('');
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [matchPerformances, setMatchPerformances] = useState<MatchPerformance[]>([]);
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  useEffect(() => {
+    if (profile?.profile?.id && profile?.role === 'ATHLETE') {
+      fetchMatchPerformances();
+    }
+  }, [profile]);
 
   const fetchProfile = async () => {
     try {
@@ -50,6 +71,20 @@ export default function Profile() {
     } catch (error) {
       console.error('Erreur lors du chargement du profil:', error);
       setLoading(false);
+    }
+  };
+
+  const fetchMatchPerformances = async () => {
+    if (!profile?.profile?.id) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_URL}/match-stats/athlete/${profile.profile.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMatchPerformances(response.data.matches || []);
+    } catch (error) {
+      console.error('Erreur lors du chargement des performances:', error);
     }
   };
 
@@ -202,6 +237,15 @@ export default function Profile() {
             <span>Retour</span>
           </button>
           <h1 style={styles.title}>Mon Profil</h1>
+          {profile?.role === 'ATHLETE' && profile.profile?.id && (
+            <button 
+              style={styles.trainingLoadButton} 
+              onClick={() => navigate(`/training-load/${profile.profile!.id}`)}
+            >
+              <MdAssessment size={20} style={{ marginRight: '8px' }} />
+              Mon analyse de charge
+            </button>
+          )}
         </div>
 
       <div style={styles.card}>
@@ -269,19 +313,50 @@ export default function Profile() {
                     </div>
                   )}
 
+                  {profile?.role === 'ATHLETE' && matchPerformances.length > 0 && (
+                    <div style={styles.performancesSection}>
+                      <h3 style={styles.performancesTitle}>
+                        <MdEmojiEvents size={24} />
+                        Mes Performances de Match
+                      </h3>
+                      <div style={styles.performancesList}>
+                        {matchPerformances.slice(0, 5).map((perf, index) => (
+                          <div key={index} style={styles.performanceCard}>
+                            <div style={styles.perfHeader}>
+                              <div style={styles.perfTitle}>{perf.sessionTitle}</div>
+                              <div style={styles.perfScore}>{perf.score} pts</div>
+                            </div>
+                            <div style={styles.perfDate}>
+                              {new Date(perf.sessionDate).toLocaleDateString('fr-FR', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                              })}
+                            </div>
+                            <div style={styles.perfStats}>
+                              <span>🎯 {perf.stats.points} pts</span>
+                              <span>🤝 {perf.stats.assists} passes</span>
+                              <span>🛡️ {perf.stats.blocks} blocks</span>
+                              <span>✋ {perf.stats.catches} récep.</span>
+                              <span>❌ {perf.stats.turnovers} pertes</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {matchPerformances.length > 5 && (
+                        <button 
+                          style={styles.viewAllButton}
+                          onClick={() => navigate(`/athlete-performance/${profile.profile!.id}`)}
+                        >
+                          Voir toutes mes performances
+                        </button>
+                      )}
+                    </div>
+                  )}
+
                   <button style={styles.editButton} onClick={() => setEditing(true)}>
                     Modifier le profil
                   </button>
-
-                  {profile?.role === 'ATHLETE' && profile.profile?.id && (
-                    <button 
-                      style={styles.trainingLoadButton} 
-                      onClick={() => navigate(`/training-load/${profile.profile!.id}`)}
-                    >
-                      <MdAssessment size={20} style={{ marginRight: '8px' }} />
-                      Mon analyse de charge
-                    </button>
-                  )}
 
                   {profile?.role !== 'ADMIN' && (
                     <button style={styles.deleteButton} onClick={handleDeleteAccount}>
@@ -416,6 +491,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: '32px',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'space-between',
     gap: '20px',
   },
   backButton: {
@@ -439,6 +515,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text',
+    flex: 1,
     margin: 0,
   },
   card: {
@@ -550,6 +627,22 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontWeight: '600',
     color: '#667eea',
   },
+  trainingLoadButton: {
+    padding: '12px 24px',
+    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '12px',
+    fontSize: '15px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+    transition: 'all 0.2s',
+    whiteSpace: 'nowrap',
+  },
   editButton: {
     marginTop: '24px',
     width: '100%',
@@ -562,23 +655,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontWeight: '600',
     cursor: 'pointer',
     boxShadow: '0 8px 20px rgba(102, 126, 234, 0.4)',
-  },
-  trainingLoadButton: {
-    marginTop: '12px',
-    width: '100%',
-    padding: '14px',
-    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-    color: 'white',
-    border: 'none',
-    borderRadius: '16px',
-    fontSize: '16px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 8px 20px rgba(59, 130, 246, 0.4)',
-    transition: 'transform 0.2s',
   },
   deleteButton: {
     marginTop: '12px',
@@ -636,6 +712,73 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: '2px solid #667eea',
     borderRadius: '16px',
     fontSize: '16px',
+    fontWeight: '600',
+    cursor: 'pointer',
+  },
+  performancesSection: {
+    marginTop: '32px',
+    padding: '24px',
+    background: 'linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%)',
+    borderRadius: '20px',
+    border: '2px solid #fb923c',
+  },
+  performancesTitle: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    fontSize: '20px',
+    fontWeight: '700',
+    color: '#ea580c',
+    marginBottom: '20px',
+  },
+  performancesList: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '12px',
+  },
+  performanceCard: {
+    padding: '16px',
+    background: 'white',
+    borderRadius: '12px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+  },
+  perfHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '8px',
+  },
+  perfTitle: {
+    fontSize: '16px',
+    fontWeight: '600',
+    color: '#1f2937',
+  },
+  perfScore: {
+    fontSize: '18px',
+    fontWeight: '700',
+    color: '#ea580c',
+  },
+  perfDate: {
+    fontSize: '13px',
+    color: '#6b7280',
+    marginBottom: '12px',
+  },
+  perfStats: {
+    display: 'flex',
+    gap: '12px',
+    flexWrap: 'wrap' as const,
+    fontSize: '13px',
+    color: '#374151',
+  },
+  viewAllButton: {
+    marginTop: '16px',
+    width: '100%',
+    padding: '12px',
+    background: 'linear-gradient(135deg, #ea580c 0%, #dc2626 100%)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '12px',
+    fontSize: '15px',
     fontWeight: '600',
     cursor: 'pointer',
   },
