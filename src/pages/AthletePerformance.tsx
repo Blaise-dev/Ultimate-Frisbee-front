@@ -12,13 +12,17 @@ const AthletePerformance: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Dates par défaut : 6 derniers mois
+  // Dates par défaut : 6 derniers mois jusqu'à 1 mois dans le futur
   const [startDate, setStartDate] = useState(() => {
     const date = new Date();
     date.setMonth(date.getMonth() - 6);
     return date.toISOString().split('T')[0];
   });
-  const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [endDate, setEndDate] = useState(() => {
+    const date = new Date();
+    date.setMonth(date.getMonth() + 1);
+    return date.toISOString().split('T')[0];
+  });
 
   useEffect(() => {
     fetchPerformance();
