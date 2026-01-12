@@ -46,10 +46,75 @@ const AddMatchPerformance: React.FC = () => {
       
       if (matchActivity) {
         setActivityId(matchActivity.id);
+        // Charger les performances existantes
+        await loadExistingPerformances(matchActivity.id, data);
+      } else {
+        // Initialiser avec des valeurs à 0
+        const athletes = (data as any).athletes || [];
+        const initialPerformances: AthletePerformance[] = athletes.map((athleteSession: any) => {
+          const athlete = athleteSession.athlete || athleteSession;
+          return {
+            athleteId: athlete.id,
+            athleteName: `${athlete.firstName} ${athlete.lastName}`,
+            points: 0,
+            assists: 0,
+            blocks: 0,
+            catches: 0,
+            turnovers: 0,
+          };
+        });
+        setPerformances(initialPerformances);
       }
+    } catch (error) {
+      console.error('Erreur:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      // Initialiser les performances pour chaque athlète
-      const athletes = (data as any).athletes || [];
+  const loadExistingPerformances = async (activityId: string, sessionData: any) => {
+    try {
+      const token = localStorage.getItem('token');
+      const athletes = (sessionData as any).athletes || [];
+      
+      // Récupérer les performances existantes pour cette activité
+      const response = await axios.get(
+        `${API_URL}/activities/session/${sessionId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      const activities = response.data || [];
+      const matchActivity = activities.find((a: any) => a.id === activityId);
+      const existingPerfs = matchActivity?.performanceData || [];
+      
+      // Organiser les performances par athlète
+      const perfsByAthlete: Record<string, any> = {};
+      existingPerfs.forEach((perf: any) => {
+        if (!perfsByAthlete[perf.athleteId]) {
+          perfsByAthlete[perf.athleteId] = {};
+        }
+        perfsByAthlete[perf.athleteId][perf.dataType] = perf.value;
+      });
+      
+      // Initialiser les performances avec les données existantes ou 0
+      const initialPerformances: AthletePerformance[] = athletes.map((athleteSession: any) => {
+        const athlete = athleteSession.athlete || athleteSession;
+        const existingData = perfsByAthlete[athlete.id] || {};
+        return {
+          athleteId: athlete.id,
+          athleteName: `${athlete.firstName} ${athlete.lastName}`,
+          points: existingData.points || 0,
+          assists: existingData.assists || 0,
+          blocks: existingData.blocks || 0,
+          catches: existingData.catches || 0,
+          turnovers: existingData.turnovers || 0,
+        };
+      });
+      setPerformances(initialPerformances);
+    } catch (error) {
+      console.error('Erreur lors du chargement des performances:', error);
+      // En cas d'erreur, initialiser avec des 0
+      const athletes = (sessionData as any).athletes || [];
       const initialPerformances: AthletePerformance[] = athletes.map((athleteSession: any) => {
         const athlete = athleteSession.athlete || athleteSession;
         return {
@@ -63,10 +128,6 @@ const AddMatchPerformance: React.FC = () => {
         };
       });
       setPerformances(initialPerformances);
-    } catch (error) {
-      console.error('Erreur:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
