@@ -242,6 +242,9 @@ const SessionDetail: React.FC = () => {
 
 const styles: Record<string, React.CSSProperties> = {
   header: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px',
     marginBottom: '24px',
   },
   imageContainer: {
