@@ -61,7 +61,7 @@ const AthleteDetail: React.FC = () => {
   return (
     <MainLayout>
       <div style={styles.header}>
-        <Button onClick={() => navigate('/athletes')} variant="secondary">
+        <Button onClick={() => navigate(-1)} variant="secondary">
           <MdArrowBack style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Retour
         </Button>
       </div>
