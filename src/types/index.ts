@@ -4,17 +4,20 @@ export type AthleteCategory = 'JUNIOR' | 'SENIOR' | 'VETERAN';
 export type AthleteLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT';
 export type GroupType = 'TRAINING' | 'COMPETITION' | 'LEISURE';
 export type SessionType = 'TRAINING' | 'MATCH';
-export type ActivityTheme =
-  | 'COMPETITION'
-  | 'STRENGTH_TRAINING'
-  | 'POSITIONING'
-  | 'THROWING'
-  | 'CATCHING'
-  | 'STRATEGY'
-  | 'ENDURANCE'
-  | 'TECHNIQUE'
-  | 'WARM_UP'
-  | 'COOL_DOWN';
+
+export interface Sport {
+  id: string;
+  name: string;
+  description?: string;
+  themes: string[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  _count?: {
+    groups: number;
+    sessions: number;
+  };
+}
 
 export interface User {
   id: string;
@@ -47,6 +50,8 @@ export interface Group {
   name: string;
   type: GroupType;
   description?: string;
+  sportId?: string;
+  sport?: Sport;
   coach?: {
     id: string;
     firstName: string;
@@ -70,6 +75,8 @@ export interface Session {
   type: SessionType;
   coachId: string;
   coach?: Coach;
+  sportId?: string;
+  sport?: Sport;
   startTime: string;
   endTime: string;
   location?: string;
@@ -92,7 +99,7 @@ export interface Activity {
   id: string;
   sessionId: string;
   name: string;
-  theme: ActivityTheme;
+  theme: string;
   description?: string;
   duration?: number;
   order: number;
