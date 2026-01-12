@@ -39,10 +39,13 @@ const AddMatchPerformance: React.FC = () => {
       const data = await sessionService.getSessionById(sessionId);
       setSession(data);
       
-      // Trouver l'activité principale du match
-      const matchActivity = (data as any).activities?.find((a: any) => 
-        a.name.toLowerCase().includes('match') || a.theme === 'MATCH'
-      ) || (data as any).activities?.[0];
+      // Trouver l'activité principale du match (priorité à celle avec "match" dans le nom)
+      const activities = (data as any).activities || [];
+      const matchActivity = activities.find((a: any) => 
+        a.name.toLowerCase().includes('match') && !a.name.toLowerCase().includes('échauffement') && !a.name.toLowerCase().includes('debriefing')
+      ) || activities.find((a: any) => a.theme === 'MATCH') || activities[0];
+      
+      console.log('Activité sélectionnée:', matchActivity?.name, 'ID:', matchActivity?.id);
       
       if (matchActivity) {
         setActivityId(matchActivity.id);
