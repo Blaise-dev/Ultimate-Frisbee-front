@@ -136,3 +136,90 @@ export interface RegisterData {
   category?: AthleteCategory;
   level?: AthleteLevel;
 }
+
+// Match Stats Types
+export interface MatchStats {
+  session: {
+    id: string;
+    title: string;
+    date: string;
+    type: string;
+    group?: string;
+    sport?: string;
+  };
+  participants: number;
+  activities: number;
+  stats: AthleteMatchStats[];
+}
+
+export interface AthleteMatchStats {
+  athleteId: string;
+  name: string;
+  category: string;
+  level: string;
+  rank: number;
+  stats: {
+    points: number;
+    assists: number;
+    blocks: number;
+    turnovers: number;
+    catches: number;
+    totalScore: number;
+  };
+}
+
+export interface AthletePerformanceHistory {
+  athlete: {
+    id: string;
+    name: string;
+    category: string;
+    level: string;
+  };
+  summary: {
+    totalMatches: number;
+    averages: {
+      points: number;
+      assists: number;
+      blocks: number;
+      turnovers: number;
+      catches: number;
+      totalScore: number;
+    };
+    totals: {
+      points: number;
+      assists: number;
+      blocks: number;
+      turnovers: number;
+      catches: number;
+      totalScore: number;
+    };
+    bestMatch: {
+      sessionId: string;
+      title: string;
+      date: string;
+      group?: string;
+      stats: {
+        points: number;
+        assists: number;
+        blocks: number;
+        turnovers: number;
+        catches: number;
+        totalScore: number;
+      };
+    } | null;
+  };
+  matchHistory: Array<{
+    sessionId: string;
+    title: string;
+    date: string;
+    group?: string;
+    stats: {
+      points: number;
+      assists: number;
+      blocks: number;
+      turnovers: number;
+      catches: number;
+      totalScore: number;
+    };
+  }>;
+}

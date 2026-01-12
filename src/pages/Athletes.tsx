@@ -9,7 +9,7 @@ import { athleteService } from '../services/athlete.service';
 import { Athlete } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-import { MdPeople, MdAdd, MdEdit, MdDelete, MdSearch, MdFilterList, MdTrendingUp, MdEmojiEvents, MdAssessment } from 'react-icons/md';
+import { MdPeople, MdAdd, MdEdit, MdDelete, MdSearch, MdFilterList, MdTrendingUp, MdEmojiEvents, MdAssessment, MdShowChart } from 'react-icons/md';
 
 const Athletes: React.FC = () => {
   const navigate = useNavigate();
@@ -285,6 +285,13 @@ const Athletes: React.FC = () => {
                     title="Analyse de charge"
                   >
                     <MdAssessment style={{ fontSize: '18px' }} />
+                  </button>
+                  <button
+                    style={{ ...styles.actionButton, color: '#10b981' }}
+                    onClick={() => navigate(`/athlete-performance/${athlete.id}`)}
+                    title="Performances Match"
+                  >
+                    <MdShowChart style={{ fontSize: '18px' }} />
                   </button>
                   <button
                     style={styles.actionButton}

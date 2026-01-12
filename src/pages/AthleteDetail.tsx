@@ -5,7 +5,7 @@ import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import { athleteService } from '../services/athlete.service';
 import { Athlete } from '../types';
-import { MdArrowBack, MdEmail, MdCategory, MdTrendingUp, MdAssessment } from 'react-icons/md';
+import { MdArrowBack, MdEmail, MdCategory, MdTrendingUp, MdAssessment, MdShowChart } from 'react-icons/md';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -66,9 +66,14 @@ const AthleteDetail: React.FC = () => {
         <Button onClick={() => navigate(-1)} variant="secondary">
           <MdArrowBack style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Retour
         </Button>
-        <Button onClick={() => navigate(`/training-load/${athlete.id}`)} variant="primary">
-          <MdAssessment style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Analyse de charge
-        </Button>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <Button onClick={() => navigate(`/training-load/${athlete.id}`)} variant="primary">
+            <MdAssessment style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Analyse de charge
+          </Button>
+          <Button onClick={() => navigate(`/athlete-performance/${athlete.id}`)} style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>
+            <MdShowChart style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Performances Match
+          </Button>
+        </div>
       </div>
 
       {/* Image de l'athlète en haut */}

@@ -16,6 +16,8 @@ import SessionDetail from './pages/SessionDetail';
 import Profile from './pages/Profile';
 import UserManagement from './pages/UserManagement';
 import TrainingLoad from './pages/TrainingLoad';
+import MatchStats from './pages/MatchStats';
+import AthletePerformance from './pages/AthletePerformance';
 import './styles/animations.css';
 
 const App: React.FC = () => {
@@ -118,6 +120,22 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['ADMIN', 'COACH', 'ATHLETE']}>
                 <TrainingLoad />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/match-stats/:sessionId"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'COACH', 'ATHLETE']}>
+                <MatchStats />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/athlete-performance/:athleteId"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'COACH', 'ATHLETE']}>
+                <AthletePerformance />
               </ProtectedRoute>
             }
           />

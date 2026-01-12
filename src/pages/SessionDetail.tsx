@@ -5,7 +5,7 @@ import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import { sessionService } from '../services/session.service';
 import { Session } from '../types';
-import { MdArrowBack, MdLocationOn, MdSchedule, MdSportsScore, MdPeople } from 'react-icons/md';
+import { MdArrowBack, MdLocationOn, MdSchedule, MdSportsScore, MdPeople, MdEmojiEvents } from 'react-icons/md';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -73,6 +73,11 @@ const SessionDetail: React.FC = () => {
         <Button onClick={() => navigate(-1)} variant="secondary">
           <MdArrowBack style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Retour
         </Button>
+        {session.type === 'MATCH' && (
+          <Button onClick={() => navigate(`/match-stats/${session.id}`)} variant="primary">
+            <MdEmojiEvents style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Statistiques du Match
+          </Button>
+        )}
       </div>
 
       {/* Image de la séance en haut */}
