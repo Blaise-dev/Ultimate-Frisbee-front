@@ -144,7 +144,7 @@ export interface MatchStats {
     title: string;
     date: string;
     type: string;
-    group?: string;
+    coach?: string;
     sport?: string;
   };
   participants: number;
@@ -197,7 +197,8 @@ export interface AthletePerformanceHistory {
       sessionId: string;
       title: string;
       date: string;
-      group?: string;
+      coach?: string;
+      sport?: string;
       stats: {
         points: number;
         assists: number;
@@ -212,7 +213,8 @@ export interface AthletePerformanceHistory {
     sessionId: string;
     title: string;
     date: string;
-    group?: string;
+    coach?: string;
+    sport?: string;
     stats: {
       points: number;
       assists: number;

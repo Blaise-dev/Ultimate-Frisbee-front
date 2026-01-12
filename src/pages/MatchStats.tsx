@@ -84,7 +84,7 @@ const MatchStats: React.FC = () => {
             month: 'long',
             day: 'numeric'
           })}</span>
-          {matchStats.session.group && <span>• {matchStats.session.group}</span>}
+          {matchStats.session.coach && <span>• {matchStats.session.coach}</span>}
           {matchStats.session.sport && <span>• {matchStats.session.sport}</span>}
         </div>
         <div className="match-summary">

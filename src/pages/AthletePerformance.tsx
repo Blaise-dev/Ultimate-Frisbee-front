@@ -139,7 +139,8 @@ const AthletePerformance: React.FC = () => {
             <div className="best-match-header">
               <h4>{performance.summary.bestMatch.title}</h4>
               <p>{new Date(performance.summary.bestMatch.date).toLocaleDateString('fr-FR')}</p>
-              {performance.summary.bestMatch.group && <p>{performance.summary.bestMatch.group}</p>}
+              {performance.summary.bestMatch.coach && <p>{performance.summary.bestMatch.coach}</p>}
+              {performance.summary.bestMatch.sport && <p>{performance.summary.bestMatch.sport}</p>}
             </div>
             <div className="best-match-stats">
               <div className="stat-item">
@@ -190,7 +191,8 @@ const AthletePerformance: React.FC = () => {
                 </div>
                 <div className="col-match">
                   <div className="match-title">{match.title}</div>
-                  {match.group && <div className="match-group">{match.group}</div>}
+                  {match.coach && <div className="match-group">{match.coach}</div>}
+                  {match.sport && <div className="match-group">{match.sport}</div>}
                 </div>
                 <div className="col-stat">{match.stats.points}</div>
                 <div className="col-stat">{match.stats.assists}</div>
