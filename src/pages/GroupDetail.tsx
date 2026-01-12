@@ -7,6 +7,8 @@ import { groupService } from '../services/group.service';
 import { Group } from '../types';
 import { MdArrowBack, MdGroup, MdPeople, MdSportsMartialArts } from 'react-icons/md';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
 const GroupDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -73,16 +75,16 @@ const GroupDetail: React.FC = () => {
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>Informations</h2>
           <div style={styles.infoGrid}>
-            {(group as any).coach && (
+            {group.coach && !group.coach.user?.isDeleted && (
               <div 
                 style={styles.infoItem}
-                onClick={() => navigate(`/coaches/${(group as any).coach.id}`)}
+                onClick={() => navigate(`/coaches/${group.coach!.id}`)}
               >
                 <MdSportsMartialArts style={styles.infoIcon} />
                 <div>
                   <div style={styles.infoLabel}>Coach</div>
                   <div style={styles.infoValue}>
-                    {(group as any).coach.firstName} {(group as any).coach.lastName}
+                    {group.coach.firstName} {group.coach.lastName}
                   </div>
                 </div>
               </div>
@@ -111,8 +113,19 @@ const GroupDetail: React.FC = () => {
                     style={styles.athleteItem}
                     onClick={() => navigate(`/athletes/${athlete.id}`)}
                   >
-                    <div style={styles.athleteAvatar}>
-                      {athlete.firstName[0]}{athlete.lastName[0]}
+                    <div style={{
+                      ...styles.athleteAvatar,
+                      ...(athlete.profilePicture ? styles.avatarImage : {})
+                    }}>
+                      {athlete.profilePicture ? (
+                        <img 
+                          src={`${API_URL.replace('/api', '')}${athlete.profilePicture}`} 
+                          alt={`${athlete.firstName} ${athlete.lastName}`}
+                          style={styles.avatarImg}
+                        />
+                      ) : (
+                        <>{athlete.firstName[0]}{athlete.lastName[0]}</>
+                      )}
                     </div>
                     <div>
                       <div style={styles.athleteName}>
@@ -261,6 +274,15 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '14px',
     fontWeight: '600',
   },
+  avatarImage: {
+    padding: 0,
+    overflow: 'hidden',
+  },
+  avatarImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  } as React.CSSProperties,
   athleteName: {
     fontSize: '15px',
     fontWeight: '600',

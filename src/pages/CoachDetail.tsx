@@ -7,6 +7,8 @@ import { coachService } from '../services/coach.service';
 import { Coach } from '../types';
 import { MdArrowBack, MdPerson, MdEmail, MdCalendarToday } from 'react-icons/md';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
 const CoachDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -15,11 +17,12 @@ const CoachDetail: React.FC = () => {
 
   useEffect(() => {
     const fetchCoach = async () => {
-      if (!id) return;
+      if (!id) {
+        setLoading(false);
+        return;
+      }
       try {
-        console.log('Fetching coach with ID:', id);
         const data = await coachService.getCoachById(id);
-        console.log('Coach data received:', data);
         setCoach(data);
       } catch (error) {
         console.error('Erreur lors du chargement:', error);
@@ -57,8 +60,19 @@ const CoachDetail: React.FC = () => {
 
       <Card>
         <div style={styles.profileHeader}>
-          <div style={styles.avatar}>
-            {coach.firstName[0]}{coach.lastName[0]}
+          <div style={{
+            ...styles.avatar,
+            ...(coach.profilePicture ? styles.avatarImage : {})
+          }}>
+            {coach.profilePicture ? (
+              <img 
+                src={`${API_URL.replace('/api', '')}${coach.profilePicture}`} 
+                alt={`${coach.firstName} ${coach.lastName}`}
+                style={styles.avatarImg}
+              />
+            ) : (
+              <>{coach.firstName[0]}{coach.lastName[0]}</>
+            )}
           </div>
           <div style={styles.profileInfo}>
             <h1 style={styles.name}>{coach.firstName} {coach.lastName}</h1>
@@ -177,6 +191,15 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '28px',
     fontWeight: '600',
   },
+  avatarImage: {
+    padding: 0,
+    overflow: 'hidden',
+  },
+  avatarImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  } as React.CSSProperties,
   profileInfo: {
     flex: 1,
   },

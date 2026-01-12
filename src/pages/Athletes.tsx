@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/Layout/MainLayout';
 import Card from '../components/UI/Card';
-import Button from '../components/UI/Button';
 import Modal from '../components/UI/Modal';
-import Input from '../components/UI/Input';
+import Toast from '../components/UI/Toast';
+import { useToast } from '../hooks/useToast';
 import { athleteService } from '../services/athlete.service';
 import { Athlete } from '../types';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import { MdPeople, MdAdd, MdEdit, MdDelete, MdSearch, MdFilterList, MdTrendingUp, MdEmojiEvents } from 'react-icons/md';
 
 const Athletes: React.FC = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const [athletes, setAthletes] = useState<Athlete[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -83,14 +86,19 @@ const Athletes: React.FC = () => {
           category: formData.category as any,
           level: formData.level as any,
         });
+        toast.success('Athlète modifié avec succès');
       } else {
+        console.log('Données envoyées:', formData);
         await athleteService.createAthlete(formData);
+        toast.success('Athlète créé avec succès');
       }
       handleCloseModal();
       fetchAthletes();
-    } catch (error) {
-      console.error('Erreur lors de la sauvegarde:', error);
-      alert('Erreur lors de la sauvegarde de l\'athlète');
+    } catch (error: any) {
+      console.error('Erreur complète:', error);
+      console.error('Response:', error.response);
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Erreur lors de la sauvegarde de l\'athlète';
+      toast.error(errorMessage);
     }
   };
 
@@ -98,10 +106,12 @@ const Athletes: React.FC = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cet athlète ?')) {
       try {
         await athleteService.deleteAthlete(id);
+        toast.success('Athlète supprimé avec succès');
         fetchAthletes();
-      } catch (error) {
+      } catch (error: any) {
         console.error('Erreur lors de la suppression:', error);
-        alert('Erreur lors de la suppression de l\'athlète');
+        const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Erreur lors de la suppression de l\'athlète';
+        toast.error(errorMessage);
       }
     }
   };
@@ -145,6 +155,14 @@ const Athletes: React.FC = () => {
 
   return (
     <MainLayout>
+      {toast.toasts.map((t) => (
+        <Toast
+          key={t.id}
+          message={t.message}
+          type={t.type}
+          onClose={() => toast.removeToast(t.id)}
+        />
+      ))}
       <div style={styles.header}>
         <h1 style={styles.title}><MdPeople style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Athlètes</h1>
         <button onClick={() => handleOpenModal()} style={styles.addButton} title="Nouvel athlète">
@@ -237,8 +255,19 @@ const Athletes: React.FC = () => {
                   style={styles.athleteHeader}
                   onClick={() => navigate(`/athletes/${athlete.id}`)}
                 >
-                  <div style={styles.avatar}>
-                    {athlete.firstName[0]}{athlete.lastName[0]}
+                  <div style={{
+                    ...styles.avatar,
+                    ...(athlete.profilePicture ? styles.avatarImage : {})
+                  }}>
+                    {athlete.profilePicture ? (
+                      <img 
+                        src={`${API_URL.replace('/api', '')}${athlete.profilePicture}`} 
+                        alt={`${athlete.firstName} ${athlete.lastName}`}
+                        style={styles.avatarImg}
+                      />
+                    ) : (
+                      <>{athlete.firstName[0]}{athlete.lastName[0]}</>
+                    )}
                   </div>
                   <div style={styles.athleteInfo}>
                     <h3 style={styles.athleteName}>
@@ -276,58 +305,116 @@ const Athletes: React.FC = () => {
         onClose={handleCloseModal}
         title={selectedAthlete ? 'Modifier l\'athlète' : 'Nouvel athlète'}
       >
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="modal-form">
           {!selectedAthlete && (
             <>
-              <Input
-                label="Email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-              />
-              <Input
-                label="Mot de passe"
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
-              />
+              <div className="modal-form-group">
+                <label className="modal-form-label">
+                  <MdPeople size={18} />
+                  Email
+                </label>
+                <input
+                  className="modal-form-input"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="exemple@email.com"
+                  required
+                />
+              </div>
+              <div className="modal-form-group">
+                <label className="modal-form-label">
+                  Mot de passe
+                </label>
+                <input
+                  className="modal-form-input"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
             </>
           )}
-          <Input
-            label="Prénom"
-            value={formData.firstName}
-            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-            required
-          />
-          <Input
-            label="Nom"
-            value={formData.lastName}
-            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-            required
-          />
-          <Input
-            label="Catégorie"
-            value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            options={categoryOptions}
-            required
-          />
-          <Input
-            label="Niveau"
-            value={formData.level}
-            onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-            options={levelOptions}
-            required
-          />
-          <div style={styles.modalActions}>
-            <Button type="button" variant="secondary" onClick={handleCloseModal}>
+          <div className="modal-form-group">
+            <label className="modal-form-label">
+              Prénom
+            </label>
+            <input
+              className="modal-form-input"
+              type="text"
+              value={formData.firstName}
+              onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+              placeholder="Prénom de l'athlète"
+              required
+            />
+          </div>
+          <div className="modal-form-group">
+            <label className="modal-form-label">
+              Nom
+            </label>
+            <input
+              className="modal-form-input"
+              type="text"
+              value={formData.lastName}
+              onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+              placeholder="Nom de l'athlète"
+              required
+            />
+          </div>
+          <div className="modal-form-group">
+            <label className="modal-form-label">
+              <MdFilterList size={18} />
+              Catégorie
+            </label>
+            <select
+              className="modal-form-select"
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              required
+            >
+              <option value="">Sélectionner une catégorie</option>
+              {categoryOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="modal-form-group">
+            <label className="modal-form-label">
+              <MdTrendingUp size={18} />
+              Niveau
+            </label>
+            <select
+              className="modal-form-select"
+              value={formData.level}
+              onChange={(e) => setFormData({ ...formData, level: e.target.value })}
+              required
+            >
+              <option value="">Sélectionner un niveau</option>
+              {levelOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="modal-form-actions">
+            <button 
+              type="button" 
+              className="modal-form-button modal-form-button-secondary" 
+              onClick={handleCloseModal}
+            >
               Annuler
-            </Button>
-            <Button type="submit">
-              {selectedAthlete ? 'Mettre à jour' : 'Créer'}
-            </Button>
+            </button>
+            <button 
+              type="submit" 
+              className="modal-form-button modal-form-button-primary"
+            >
+              {selectedAthlete ? 'Mettre à jour' : 'Créer l\'athlète'}
+            </button>
           </div>
         </form>
       </Modal>
@@ -495,6 +582,15 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '20px',
     flexShrink: 0,
   },
+  avatarImage: {
+    padding: 0,
+    overflow: 'hidden',
+  },
+  avatarImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  } as React.CSSProperties,
   athleteInfo: {
     flex: 1,
   },

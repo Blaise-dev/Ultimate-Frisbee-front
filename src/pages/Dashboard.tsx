@@ -5,18 +5,23 @@ import Card from '../components/UI/Card';
 import { useAuth } from '../contexts/AuthContext';
 import { sessionService } from '../services/session.service';
 import { athleteService } from '../services/athlete.service';
-import { Session, Athlete } from '../types';
+import { groupService } from '../services/group.service';
+import { Session, Athlete, Group } from '../types';
 import { MdDashboard, MdEventNote, MdAccessTime, MdPeople, MdLocationOn, MdSchedule, MdGroup } from 'react-icons/md';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [athletes, setAthletes] = useState<Athlete[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
   const [stats, setStats] = useState({
     totalSessions: 0,
     upcomingSessions: 0,
     totalAthletes: 0,
+    totalGroups: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -24,15 +29,34 @@ const Dashboard: React.FC = () => {
     const fetchData = async () => {
       try {
         const sessionsData = await sessionService.getAllSessions();
-        setSessions(sessionsData);
+        const groupsData = await groupService.getAllGroups();
+        
+        // Pour les athlètes, filtrer uniquement les séances auxquelles ils sont inscrits
+        let filteredSessions = sessionsData;
+        let filteredGroups = groupsData;
+        if (user?.role === 'ATHLETE') {
+          const athleteId = (user?.profile as any)?.id;
+          if (athleteId) {
+            filteredSessions = sessionsData.filter(session => 
+              (session as any).athletes?.some((a: any) => a.athleteId === athleteId)
+            );
+            filteredGroups = groupsData.filter(group =>
+              (group as any).athletes?.some((a: any) => a.athleteId === athleteId)
+            );
+          }
+        }
+        
+        setSessions(filteredSessions);
+        setGroups(filteredGroups);
 
         const now = new Date();
-        const upcoming = sessionsData.filter(s => new Date(s.startTime) > now).length;
+        const upcoming = filteredSessions.filter(s => new Date(s.startTime) > now).length;
 
         setStats({
-          totalSessions: sessionsData.length,
+          totalSessions: filteredSessions.length,
           upcomingSessions: upcoming,
           totalAthletes: 0,
+          totalGroups: filteredGroups.length,
         });
 
         if (user?.role === 'COACH' || user?.role === 'ADMIN') {
@@ -100,6 +124,17 @@ const Dashboard: React.FC = () => {
             <div style={styles.statLabel}>Séances à venir</div>
           </div>
         </div>
+        {user?.role === 'ATHLETE' && (
+          <div style={{ ...styles.statCard, borderLeft: '4px solid #f59e0b' }}>
+            <div style={{ ...styles.statIcon, background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>
+              <MdGroup style={{ color: 'white' }} />
+            </div>
+            <div>
+              <div style={styles.statValue}>{stats.totalGroups}</div>
+              <div style={styles.statLabel}>Mes groupes</div>
+            </div>
+          </div>
+        )}
         {(user?.role === 'COACH' || user?.role === 'ADMIN') && (
           <div style={{ ...styles.statCard, borderLeft: '4px solid #f59e0b' }}>
             <div style={{ ...styles.statIcon, background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>
@@ -115,9 +150,9 @@ const Dashboard: React.FC = () => {
 
       <div style={styles.content}>
         {/* Section Séances */}
-        <Card title={<span><MdEventNote style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Prochaines séances</span>}>
+        <Card title={<span><MdEventNote style={{ verticalAlign: 'middle', marginRight: '8px' }} /> {user?.role === 'ATHLETE' ? 'Mes séances' : 'Prochaines séances'}</span>}>
           {sessions.length === 0 ? (
-            <div style={styles.emptyMessage}>Aucune séance programmée</div>
+            <div style={styles.emptyMessage}>{user?.role === 'ATHLETE' ? 'Vous n\'êtes inscrit à aucune séance' : 'Aucune séance programmée'}</div>
           ) : (
             <div style={styles.grid}>
               {sessions.slice(0, 6).map((session) => (
@@ -128,12 +163,16 @@ const Dashboard: React.FC = () => {
                 >
                   <div style={styles.cardImage}>
                     <img 
-                      src={session.type === 'TRAINING' 
-                        ? 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&h=250&fit=crop' 
-                        : 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&h=250&fit=crop'
+                      src={session.imageUrl 
+                        ? `${API_URL.replace('/api', '')}${session.imageUrl}`
+                        : `http://localhost:3000/uploads/sessions/default-${session.type.toLowerCase()}.jpg`
                       } 
                       alt={session.title}
                       style={styles.cardImg}
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.src = `http://localhost:3000/uploads/sessions/default-${session.type.toLowerCase()}.jpg`;
+                      }}
                     />
                     <span style={{
                       ...styles.badge,
@@ -163,6 +202,56 @@ const Dashboard: React.FC = () => {
           )}
         </Card>
 
+        {/* Section Groupes pour les athlètes */}
+        {user?.role === 'ATHLETE' && (
+          <Card title={<span><MdGroup style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Mes groupes</span>}>
+            {groups.length === 0 ? (
+              <div style={styles.emptyMessage}>Vous n'êtes inscrit à aucun groupe</div>
+            ) : (
+              <div style={styles.groupGrid}>
+                {groups.map((group) => (
+                  <div 
+                    key={group.id} 
+                    style={styles.groupCard}
+                    onClick={() => navigate(`/groups/${group.id}`)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(102, 126, 234, 0.2)';
+                      e.currentTarget.style.borderColor = '#667eea';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
+                      e.currentTarget.style.borderColor = '#f0f0f0';
+                    }}
+                  >
+                    <div style={styles.groupHeader}>
+                      <div style={styles.groupIconContainer}>
+                        <MdGroup style={styles.groupIcon} />
+                      </div>
+                      <div style={styles.groupContent}>
+                        <h4 style={styles.groupName}>{group.name}</h4>
+                        <span style={styles.groupBadge}>{group.type}</span>
+                      </div>
+                    </div>
+                    {group.description && (
+                      <p style={styles.groupDescription}>{group.description}</p>
+                    )}
+                    {(group as any).athletes?.length > 0 && (
+                      <div style={styles.groupFooter}>
+                        <MdPeople style={{ fontSize: '16px', color: '#667eea' }} />
+                        <span style={styles.groupMembersCount}>
+                          {(group as any).athletes.length} membre{(group as any).athletes.length > 1 ? 's' : ''}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+        )}
+
         {/* Section Athlètes (seulement pour Coach/Admin) */}
         {(user?.role === 'COACH' || user?.role === 'ADMIN') && (
           <Card title={<span><MdPeople style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Athlètes récents</span>}>
@@ -178,9 +267,16 @@ const Dashboard: React.FC = () => {
                   >
                     <div style={styles.athleteCardImage}>
                       <img 
-                        src={`https://ui-avatars.com/api/?name=${athlete.firstName}+${athlete.lastName}&size=400&background=10b981&color=fff&bold=true`}
+                        src={athlete.profilePicture 
+                          ? `${API_URL.replace('/api', '')}${athlete.profilePicture}`
+                          : `https://ui-avatars.com/api/?name=${athlete.firstName}+${athlete.lastName}&size=400&background=10b981&color=fff&bold=true`
+                        }
                         alt={`${athlete.firstName} ${athlete.lastName}`}
                         style={styles.athleteImg}
+                        onError={(e) => {
+                          const img = e.target as HTMLImageElement;
+                          img.src = `https://ui-avatars.com/api/?name=${athlete.firstName}+${athlete.lastName}&size=400&background=10b981&color=fff&bold=true`;
+                        }}
                       />
                     </div>
                     <div style={styles.athleteCardBody}>
@@ -392,6 +488,77 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: 'center',
     color: '#999',
   },
+  groupGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+    gap: '20px',
+  },
+  groupCard: {
+    padding: '24px',
+    border: '2px solid #f0f0f0',
+    borderRadius: '16px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    background: 'linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+  },
+  groupHeader: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '16px',
+    marginBottom: '12px',
+  },
+  groupIconContainer: {
+    width: '48px',
+    height: '48px',
+    borderRadius: '12px',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  } as React.CSSProperties,
+  groupIcon: {
+    fontSize: '24px',
+    color: 'white',
+  } as React.CSSProperties,
+  groupContent: {
+    flex: 1,
+  } as React.CSSProperties,
+  groupName: {
+    margin: '0 0 6px 0',
+    fontSize: '18px',
+    fontWeight: '600',
+    color: '#1f2937',
+  } as React.CSSProperties,
+  groupBadge: {
+    display: 'inline-block',
+    padding: '4px 12px',
+    background: '#e0e7ff',
+    color: '#4338ca',
+    borderRadius: '8px',
+    fontSize: '12px',
+    fontWeight: '600',
+    textTransform: 'uppercase' as const,
+  } as React.CSSProperties,
+  groupDescription: {
+    margin: '0 0 12px 0',
+    fontSize: '14px',
+    color: '#6b7280',
+    lineHeight: '1.6',
+  } as React.CSSProperties,
+  groupFooter: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    paddingTop: '12px',
+    borderTop: '1px solid #e5e7eb',
+  } as React.CSSProperties,
+  groupMembersCount: {
+    fontSize: '14px',
+    color: '#667eea',
+    fontWeight: '500',
+  } as React.CSSProperties,
 };
 
 export default Dashboard;

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Cercle de fond avec dégradé -->
+  <circle cx="50" cy="50" r="48" fill="url(#bgGradient)"/>
+  
+  <!-- Icône de frisbee/disque stylisé en blanc -->
+  <circle cx="50" cy="50" r="28" fill="none" stroke="white" stroke-width="3"/>
+  <circle cx="50" cy="50" r="20" fill="none" stroke="white" stroke-width="2"/>
+  <circle cx="50" cy="50" r="12" fill="none" stroke="white" stroke-width="2"/>
+  
+  <!-- Centre -->
+  <circle cx="50" cy="50" r="4" fill="white"/>
+</svg>

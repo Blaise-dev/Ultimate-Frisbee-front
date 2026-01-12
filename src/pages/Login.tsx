@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { MdSportsBaseball } from 'react-icons/md';
 
@@ -69,6 +69,13 @@ const Login: React.FC = () => {
           >
             {loading ? 'Connexion...' : 'Se connecter'}
           </button>
+
+          <div style={styles.footer}>
+            <span style={styles.footerText}>Pas encore de compte ? </span>
+            <Link to="/register" style={styles.link}>
+              S'inscrire
+            </Link>
+          </div>
         </form>
       </div>
     </div>
@@ -164,6 +171,20 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: 'center',
     fontSize: '13px',
     border: '1px solid #fecaca',
+  },
+  footer: {
+    textAlign: 'center',
+    marginTop: '16px',
+  },
+  footerText: {
+    fontSize: '14px',
+    color: '#6b7280',
+  },
+  link: {
+    color: '#667eea',
+    textDecoration: 'none',
+    fontSize: '14px',
+    fontWeight: '600',
   },
 };
 

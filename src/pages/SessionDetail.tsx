@@ -7,6 +7,8 @@ import { sessionService } from '../services/session.service';
 import { Session } from '../types';
 import { MdArrowBack, MdLocationOn, MdSchedule, MdSportsScore, MdPeople } from 'react-icons/md';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
 const SessionDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -56,6 +58,15 @@ const SessionDetail: React.FC = () => {
     });
   };
 
+  // Debug: afficher les informations de l'image
+  const imageSrc = session 
+    ? (session.imageUrl 
+        ? `${API_URL.replace('/api', '')}${session.imageUrl}`
+        : `http://localhost:3000/uploads/sessions/default-${session.type.toLowerCase()}.jpg`)
+    : '';
+  
+  console.log('SessionDetail - Session:', session?.title, 'ImageURL:', session?.imageUrl, 'Final src:', imageSrc);
+
   return (
     <MainLayout>
       <div style={styles.header}>
@@ -67,12 +78,17 @@ const SessionDetail: React.FC = () => {
       {/* Image de la séance en haut */}
       <div style={styles.imageContainer}>
         <img 
-          src={session.type === 'TRAINING' 
-            ? 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1200&h=400&fit=crop' 
-            : 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1200&h=400&fit=crop'
-          } 
+          src={imageSrc} 
           alt={session.title}
           style={styles.image}
+          onError={(e) => {
+            // Image de fallback si erreur
+            const img = e.target as HTMLImageElement;
+            const fallbackSrc = `http://localhost:3000/uploads/sessions/default-${session.type.toLowerCase()}.jpg`;
+            console.error('SessionDetail - Image loading error for:', img.src, 'Fallback to:', fallbackSrc);
+            img.src = fallbackSrc;
+          }}
+          onLoad={() => console.log('SessionDetail - Image loaded successfully:', imageSrc)}
         />
         <div style={styles.imageOverlay}></div>
         <div style={styles.imageContent}>
@@ -186,8 +202,19 @@ const SessionDetail: React.FC = () => {
                     style={styles.athleteItem}
                     onClick={() => navigate(`/athletes/${athlete.id}`)}
                   >
-                    <div style={styles.athleteAvatar}>
-                      {athlete.firstName[0]}{athlete.lastName[0]}
+                    <div style={{
+                      ...styles.athleteAvatar,
+                      ...(athlete.profilePicture ? styles.avatarImage : {})
+                    }}>
+                      {athlete.profilePicture ? (
+                        <img 
+                          src={`${API_URL.replace('/api', '')}${athlete.profilePicture}`} 
+                          alt={`${athlete.firstName} ${athlete.lastName}`}
+                          style={styles.avatarImg}
+                        />
+                      ) : (
+                        <>{athlete.firstName[0]}{athlete.lastName[0]}</>
+                      )}
                     </div>
                     <div>
                       <div style={styles.athleteName}>
@@ -409,6 +436,15 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '14px',
     fontWeight: '600',
   },
+  avatarImage: {
+    padding: 0,
+    overflow: 'hidden',
+  },
+  avatarImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  } as React.CSSProperties,
   athleteName: {
     fontSize: '15px',
     fontWeight: '600',

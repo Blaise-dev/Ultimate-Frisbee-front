@@ -1,15 +1,34 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { MdLogout } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
+import { MdLogout, MdPerson } from 'react-icons/md';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <header style={styles.header}>
       <div style={styles.userInfo}>
-        <div style={styles.avatar}>
-          {user?.profile?.firstName?.[0]}{user?.profile?.lastName?.[0]}
+        <div 
+          style={{
+            ...styles.avatar,
+            ...(user?.profile?.profilePicture ? styles.avatarImage : {})
+          }}
+          onClick={() => navigate('/profile')}
+          title="Mon profil"
+        >
+          {user?.profile?.profilePicture ? (
+            <img 
+              src={`${API_URL.replace('/api', '')}${user.profile.profilePicture}`} 
+              alt="Profil" 
+              style={styles.avatarImg}
+            />
+          ) : (
+            <>{user?.profile?.firstName?.[0]}{user?.profile?.lastName?.[0]}</>
+          )}
         </div>
         <div>
           <div style={styles.userName}>
@@ -18,9 +37,18 @@ const Header: React.FC = () => {
           <div style={styles.userRole}>{user?.role}</div>
         </div>
       </div>
-      <button onClick={logout} style={styles.logoutButton} title="Déconnexion">
-        <MdLogout style={{ fontSize: '20px' }} />
-      </button>
+      <div style={styles.headerActions}>
+        <button 
+          onClick={() => navigate('/profile')} 
+          style={styles.profileButton}
+          title="Mon profil"
+        >
+          <MdPerson style={{ fontSize: '20px' }} />
+        </button>
+        <button onClick={logout} style={styles.logoutButton} title="Déconnexion">
+          <MdLogout style={{ fontSize: '20px' }} />
+        </button>
+      </div>
     </header>
   );
 };
@@ -53,7 +81,18 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'center',
     fontSize: '14px',
     fontWeight: '600',
+    cursor: 'pointer',
+    transition: 'transform 0.2s',
   },
+  avatarImage: {
+    padding: 0,
+    overflow: 'hidden',
+  },
+  avatarImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  } as React.CSSProperties,
   userName: {
     fontSize: '14px',
     fontWeight: '600',
@@ -63,6 +102,25 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '12px',
     color: '#6b7280',
     textTransform: 'capitalize',
+  },
+  headerActions: {
+    display: 'flex',
+    gap: '12px',
+  },
+  profileButton: {
+    padding: '12px',
+    background: '#ffffff',
+    color: '#667eea',
+    border: '2px solid #c7d2fe',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: '500',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
+    transition: 'all 0.2s ease',
   },
   logoutButton: {
     padding: '12px',

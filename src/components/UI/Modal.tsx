@@ -1,22 +1,54 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { MdClose } from 'react-icons/md';
+import './Modal.css';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  maxWidth?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, maxWidth = '600px' }) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
     <div style={styles.overlay} onClick={onClose}>
-      <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <div 
+        style={{ ...styles.modal, maxWidth }} 
+        onClick={(e) => e.stopPropagation()}
+        className="modal-content"
+      >
         <div style={styles.header}>
           <h2 style={styles.title}>{title}</h2>
-          <button style={styles.closeButton} onClick={onClose}>
-            ✕
+          <button 
+            style={styles.closeButton} 
+            onClick={onClose}
+            aria-label="Fermer"
+          >
+            <MdClose size={24} />
           </button>
         </div>
         <div style={styles.content}>
@@ -34,52 +66,61 @@ const styles: Record<string, React.CSSProperties> = {
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'rgba(0,0,0,0.6)',
+    background: 'rgba(0, 0, 0, 0.5)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1000,
-    backdropFilter: 'blur(4px)',
+    backdropFilter: 'blur(8px)',
+    animation: 'fadeIn 0.2s ease-out',
   },
   modal: {
     background: '#ffffff',
-    borderRadius: '8px',
-    maxWidth: '600px',
+    borderRadius: '20px',
     width: '90%',
     maxHeight: '90vh',
-    overflow: 'auto',
-    boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)',
+    overflow: 'hidden',
+    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+    animation: 'slideUp 0.3s ease-out',
+    display: 'flex',
+    flexDirection: 'column',
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '20px 24px',
-    borderBottom: '1px solid #e5e7eb',
+    padding: '24px 28px',
+    borderBottom: '1px solid #f0f0f0',
+    background: 'linear-gradient(to bottom, #ffffff, #fafafa)',
   },
   title: {
     margin: 0,
-    fontSize: '18px',
-    fontWeight: '600',
-    color: '#1f2937',
+    fontSize: '22px',
+    fontWeight: '700',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text',
   },
   closeButton: {
     background: 'transparent',
     border: 'none',
-    fontSize: '22px',
-    color: '#6b7280',
+    fontSize: '24px',
+    color: '#9ca3af',
     cursor: 'pointer',
-    padding: '0',
-    width: '32px',
-    height: '32px',
+    padding: '8px',
+    width: '40px',
+    height: '40px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: '4px',
-    transition: 'all 0.15s ease',
+    borderRadius: '10px',
+    transition: 'all 0.2s ease',
   },
   content: {
-    padding: '24px',
+    padding: '28px',
+    overflowY: 'auto',
+    flex: 1,
   },
 };
 

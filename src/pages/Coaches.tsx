@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/Layout/MainLayout';
 import Card from '../components/UI/Card';
-import Button from '../components/UI/Button';
 import Modal from '../components/UI/Modal';
-import Input from '../components/UI/Input';
+import Toast from '../components/UI/Toast';
+import { useToast } from '../hooks/useToast';
 import { coachService } from '../services/coach.service';
 import { Coach } from '../types';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 import { MdSportsMartialArts, MdAdd, MdEdit, MdDelete, MdCalendarToday } from 'react-icons/md';
 
 const Coaches: React.FC = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -82,12 +85,14 @@ const Coaches: React.FC = () => {
         } as any);
       } else {
         await coachService.createCoach(formData);
+        toast.success('Coach créé avec succès');
       }
       handleCloseModal();
       fetchCoaches();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur lors de la sauvegarde:', error);
-      alert('Erreur lors de la sauvegarde du coach');
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Erreur lors de la sauvegarde du coach';
+      toast.error(errorMessage);
     }
   };
 
@@ -95,10 +100,12 @@ const Coaches: React.FC = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce coach ?')) {
       try {
         await coachService.deleteCoach(id);
+        toast.success('Coach supprimé avec succès');
         fetchCoaches();
-      } catch (error) {
+      } catch (error: any) {
         console.error('Erreur lors de la suppression:', error);
-        alert('Erreur lors de la suppression du coach');
+        const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Erreur lors de la suppression du coach';
+        toast.error(errorMessage);
       }
     }
   };
@@ -131,8 +138,19 @@ const Coaches: React.FC = () => {
                   style={styles.coachHeader}
                   onClick={() => navigate(`/coaches/${coach.id}`)}
                 >
-                  <div style={styles.avatar}>
-                    {coach.firstName[0]}{coach.lastName[0]}
+                  <div style={{
+                    ...styles.avatar,
+                    ...(coach.profilePicture ? styles.avatarImage : {})
+                  }}>
+                    {coach.profilePicture ? (
+                      <img 
+                        src={`${API_URL.replace('/api', '')}${coach.profilePicture}`} 
+                        alt={`${coach.firstName} ${coach.lastName}`}
+                        style={styles.avatarImg}
+                      />
+                    ) : (
+                      <>{coach.firstName[0]}{coach.lastName[0]}</>
+                    )}
                   </div>
                   <div style={styles.coachInfo}>
                     <h3 style={styles.coachName}>
@@ -173,61 +191,120 @@ const Coaches: React.FC = () => {
         onClose={handleCloseModal}
         title={selectedCoach ? 'Modifier le coach' : 'Nouveau coach'}
       >
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="modal-form">
           {!selectedCoach && (
             <>
-              <Input
-                label="Email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-              />
-              <Input
-                label="Mot de passe"
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
-              />
+              <div className="modal-form-group">
+                <label className="modal-form-label">
+                  <MdSportsMartialArts size={18} />
+                  Email
+                </label>
+                <input
+                  className="modal-form-input"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="coach@example.com"
+                  required
+                />
+              </div>
+              <div className="modal-form-group">
+                <label className="modal-form-label">
+                  Mot de passe
+                </label>
+                <input
+                  className="modal-form-input"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
             </>
           )}
-          <Input
-            label="Prénom"
-            value={formData.firstName}
-            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-            required
-          />
-          <Input
-            label="Nom"
-            value={formData.lastName}
-            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-            required
-          />
-          <Input
-            label="Spécialisation"
-            value={formData.specialization}
-            onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
-            placeholder="Ex: Stratégie offensive, Défense..."
-            required
-          />
-          <Input
-            label="Années d'expérience"
-            type="number"
-            value={formData.experienceYears}
-            onChange={(e) => setFormData({ ...formData, experienceYears: Number(e.target.value) })}
-            required
-          />
-          <div style={styles.modalActions}>
-            <Button type="button" variant="secondary" onClick={handleCloseModal}>
+          <div className="modal-form-group">
+            <label className="modal-form-label">
+              Prénom
+            </label>
+            <input
+              className="modal-form-input"
+              type="text"
+              value={formData.firstName}
+              onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+              placeholder="Prénom du coach"
+              required
+            />
+          </div>
+          <div className="modal-form-group">
+            <label className="modal-form-label">
+              Nom
+            </label>
+            <input
+              className="modal-form-input"
+              type="text"
+              value={formData.lastName}
+              onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+              placeholder="Nom du coach"
+              required
+            />
+          </div>
+          <div className="modal-form-group">
+            <label className="modal-form-label">
+              Spécialisation
+            </label>
+            <input
+              className="modal-form-input"
+              type="text"
+              value={formData.specialization}
+              onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
+              placeholder="Ex: Stratégie offensive, Défense..."
+              required
+            />
+          </div>
+          <div className="modal-form-group">
+            <label className="modal-form-label">
+              <MdCalendarToday size={18} />
+              Années d'expérience
+            </label>
+            <input
+              className="modal-form-input"
+              type="number"
+              min="0"
+              value={formData.experienceYears}
+              onChange={(e) => setFormData({ ...formData, experienceYears: Number(e.target.value) })}
+              placeholder="Nombre d'années"
+              required
+            />
+          </div>
+          <div className="modal-form-actions">
+            <button 
+              type="button" 
+              className="modal-form-button modal-form-button-secondary" 
+              onClick={handleCloseModal}
+            >
               Annuler
-            </Button>
-            <Button type="submit">
-              {selectedCoach ? 'Mettre à jour' : 'Créer'}
-            </Button>
+            </button>
+            <button 
+              type="submit" 
+              className="modal-form-button modal-form-button-primary"
+            >
+              {selectedCoach ? 'Mettre à jour' : 'Créer le coach'}
+            </button>
           </div>
         </form>
       </Modal>
+      
+      {/* Toasts */}
+      {toast.toasts.map((t, index) => (
+        <Toast
+          key={t.id}
+          message={t.message}
+          type={t.type}
+          onClose={() => toast.removeToast(t.id)}
+          index={index}
+        />
+      ))}
     </MainLayout>
   );
 };
@@ -305,6 +382,15 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: '600',
     flexShrink: 0,
   },
+  avatarImage: {
+    padding: 0,
+    overflow: 'hidden',
+  },
+  avatarImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  } as React.CSSProperties,
   coachInfo: {
     flex: 1,
   },

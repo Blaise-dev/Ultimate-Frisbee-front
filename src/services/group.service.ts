@@ -25,10 +25,9 @@ export const groupService = {
 
   async createGroup(data: {
     name: string;
-    category: string;
-    level: string;
-    coachId: string;
-    athleteIds?: string[];
+    type: string;
+    description?: string;
+    coachId?: string;
   }): Promise<Group> {
     const response = await api.post<Group>('/groups', data);
     return response.data;
@@ -48,5 +47,13 @@ export const groupService = {
   }> {
     const response = await api.get(`/groups/${id}/stats`);
     return response.data;
+  },
+
+  async joinGroup(groupId: string, athleteId: string): Promise<void> {
+    await api.post('/groups/join', { groupId, athleteId });
+  },
+
+  async leaveGroup(groupId: string, athleteId: string): Promise<void> {
+    await api.delete('/groups/leave', { data: { groupId, athleteId } });
   },
 };

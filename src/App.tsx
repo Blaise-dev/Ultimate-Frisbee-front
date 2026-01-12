@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Athletes from './pages/Athletes';
 import AthleteDetail from './pages/AthleteDetail';
@@ -12,6 +13,8 @@ import Groups from './pages/Groups';
 import GroupDetail from './pages/GroupDetail';
 import Sessions from './pages/Sessions';
 import SessionDetail from './pages/SessionDetail';
+import Profile from './pages/Profile';
+import UserManagement from './pages/UserManagement';
 import './styles/animations.css';
 
 const App: React.FC = () => {
@@ -20,6 +23,7 @@ const App: React.FC = () => {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route
             path="/dashboard"
             element={
@@ -47,7 +51,7 @@ const App: React.FC = () => {
           <Route
             path="/athletes/:id"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN', 'COACH']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'COACH', 'ATHLETE']}>
                 <AthleteDetail />
               </ProtectedRoute>
             }
@@ -97,6 +101,22 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <SessionDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <UserManagement />
               </ProtectedRoute>
             }
           />

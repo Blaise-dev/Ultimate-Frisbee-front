@@ -47,6 +47,16 @@
   }
 }
 
+/* Spinner pour l'upload */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .badge-animated {
   animation: pulse-badge 2s ease-in-out infinite;
 }

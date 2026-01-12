@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { MdDashboard, MdEventNote, MdGroup, MdSportsMartialArts, MdDirectionsRun, MdSportsBaseball } from 'react-icons/md';
+import { MdDashboard, MdEventNote, MdGroup, MdSportsMartialArts, MdDirectionsRun, MdSportsBaseball, MdPeople } from 'react-icons/md';
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
@@ -14,6 +14,7 @@ const Sidebar: React.FC = () => {
     { path: '/athletes', label: 'Athlètes', icon: <MdDirectionsRun />, roles: ['ADMIN', 'COACH'] },
     { path: '/groups', label: 'Groupes', icon: <MdGroup />, roles: ['ADMIN', 'COACH'] },
     { path: '/coaches', label: 'Coachs', icon: <MdSportsMartialArts />, roles: ['ADMIN'] },
+    { path: '/users', label: 'Utilisateurs', icon: <MdPeople />, roles: ['ADMIN'] },
   ];
 
   const filteredMenuItems = menuItems.filter(item => 

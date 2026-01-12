@@ -7,6 +7,8 @@ import { athleteService } from '../services/athlete.service';
 import { Athlete } from '../types';
 import { MdArrowBack, MdEmail, MdCategory, MdTrendingUp } from 'react-icons/md';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
 const AthleteDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -69,9 +71,16 @@ const AthleteDetail: React.FC = () => {
       {/* Image de l'athlète en haut */}
       <div style={styles.imageContainer}>
         <img 
-          src={`https://ui-avatars.com/api/?name=${athlete.firstName}+${athlete.lastName}&size=1200&background=10b981&color=fff&bold=true`}
+          src={athlete.profilePicture 
+            ? `${API_URL.replace('/api', '')}${athlete.profilePicture}`
+            : `https://ui-avatars.com/api/?name=${athlete.firstName}+${athlete.lastName}&size=1200&background=10b981&color=fff&bold=true`
+          }
           alt={`${athlete.firstName} ${athlete.lastName}`}
           style={styles.image}
+          onError={(e) => {
+            const img = e.target as HTMLImageElement;
+            img.src = `https://ui-avatars.com/api/?name=${athlete.firstName}+${athlete.lastName}&size=1200&background=10b981&color=fff&bold=true`;
+          }}
         />
         <div style={styles.imageOverlay}></div>
         <div style={styles.imageContent}>

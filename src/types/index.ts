@@ -30,6 +30,7 @@ export interface Athlete {
   lastName: string;
   category: AthleteCategory;
   level: AthleteLevel;
+  profilePicture?: string;
   groups?: AthleteGroup[];
 }
 
@@ -38,6 +39,7 @@ export interface Coach {
   userId: string;
   firstName: string;
   lastName: string;
+  profilePicture?: string;
 }
 
 export interface Group {
@@ -45,6 +47,15 @@ export interface Group {
   name: string;
   type: GroupType;
   description?: string;
+  coach?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    user?: {
+      email: string;
+      isDeleted: boolean;
+    };
+  };
 }
 
 export interface AthleteGroup {
@@ -63,6 +74,7 @@ export interface Session {
   endTime: string;
   location?: string;
   description?: string;
+  imageUrl?: string;
   isRecurrent: boolean;
   recurrence?: string;
   athletes?: AthleteSession[];
