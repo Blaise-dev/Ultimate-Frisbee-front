@@ -90,34 +90,29 @@ const AddMatchPerformance: React.FC = () => {
     try {
       const token = localStorage.getItem('token');
       
-      // Sauvegarder chaque performance
-      for (const perf of performances) {
-        // Supprimer les anciennes performances
-        // (on pourrait ajouter un endpoint DELETE, mais pour simplifier on les écrase)
-        
-        const stats = [
-          { dataType: 'points', value: perf.points },
-          { dataType: 'assists', value: perf.assists },
-          { dataType: 'blocks', value: perf.blocks },
-          { dataType: 'catches', value: perf.catches },
-          { dataType: 'turnovers', value: perf.turnovers },
-        ];
-
-        for (const stat of stats) {
-          await axios.post(
-            `${API_URL}/activities/performance`,
-            {
-              activityId,
-              athleteId: perf.athleteId,
-              dataType: stat.dataType,
-              value: stat.value,
-            },
-            {
-              headers: { Authorization: `Bearer ${token}` }
-            }
-          );
+      // Préparer les données au format attendu par l'API
+      const performancesData = performances.map(perf => ({
+        athleteId: perf.athleteId,
+        stats: {
+          points: perf.points,
+          assists: perf.assists,
+          blocks: perf.blocks,
+          catches: perf.catches,
+          turnovers: perf.turnovers,
         }
-      }
+      }));
+
+      // Envoyer toutes les performances en une seule requête
+      await axios.post(
+        `${API_URL}/activities/performance/bulk`,
+        {
+          activityId,
+          performances: performancesData,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
 
       alert('Performances enregistrées avec succès !');
       navigate(`/match-stats/${sessionId}`);
@@ -152,7 +147,7 @@ const AddMatchPerformance: React.FC = () => {
           <MdArrowBack style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Retour
         </Button>
         <h1 style={styles.title}>
-          <MdSportsScore size={32} /> Saisir les Performances
+          Saisir les Performances
         </h1>
       </div>
 
