@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { MdArrowBack } from 'react-icons/md';
 import '../styles/TrainingLoad.css';
 
 interface TrainingLoadData {
@@ -41,6 +42,7 @@ interface TrainingLoadData {
 
 const TrainingLoad: React.FC = () => {
   const { athleteId } = useParams<{ athleteId: string }>();
+  const navigate = useNavigate();
   const [trainingLoad, setTrainingLoad] = useState<TrainingLoadData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -94,6 +96,13 @@ const TrainingLoad: React.FC = () => {
 
   return (
     <div className="training-load-container">
+      <div className="header-actions">
+        <button className="back-button" onClick={() => navigate(-1)}>
+          <MdArrowBack size={20} />
+          <span>Retour</span>
+        </button>
+      </div>
+      
       <h1>Analyse de la charge d'entraînement</h1>
       
       <div className="athlete-info">

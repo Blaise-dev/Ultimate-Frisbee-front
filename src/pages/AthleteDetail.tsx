@@ -5,7 +5,7 @@ import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import { athleteService } from '../services/athlete.service';
 import { Athlete } from '../types';
-import { MdArrowBack, MdEmail, MdCategory, MdTrendingUp } from 'react-icons/md';
+import { MdArrowBack, MdEmail, MdCategory, MdTrendingUp, MdAssessment } from 'react-icons/md';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -65,6 +65,9 @@ const AthleteDetail: React.FC = () => {
       <div style={styles.header}>
         <Button onClick={() => navigate(-1)} variant="secondary">
           <MdArrowBack style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Retour
+        </Button>
+        <Button onClick={() => navigate(`/training-load/${athlete.id}`)} variant="primary">
+          <MdAssessment style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Analyse de charge
         </Button>
       </div>
 
@@ -152,7 +155,11 @@ const AthleteDetail: React.FC = () => {
 
 const styles: Record<string, React.CSSProperties> = {
   header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: '24px',
+    gap: '16px',
   },
   imageContainer: {
     position: 'relative',

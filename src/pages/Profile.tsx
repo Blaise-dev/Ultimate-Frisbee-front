@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { MdCameraAlt, MdPerson, MdEmail, MdArrowBack, MdAdminPanelSettings, MdSportsHandball, MdVerified } from 'react-icons/md';
+import { MdCameraAlt, MdPerson, MdEmail, MdArrowBack, MdAdminPanelSettings, MdSportsHandball, MdVerified, MdAssessment } from 'react-icons/md';
 import Toast from '../components/UI/Toast';
 import { useToast } from '../hooks/useToast';
 
@@ -272,6 +272,16 @@ export default function Profile() {
                   <button style={styles.editButton} onClick={() => setEditing(true)}>
                     Modifier le profil
                   </button>
+
+                  {profile?.role === 'ATHLETE' && profile.profile?.id && (
+                    <button 
+                      style={styles.trainingLoadButton} 
+                      onClick={() => navigate(`/training-load/${profile.profile!.id}`)}
+                    >
+                      <MdAssessment size={20} style={{ marginRight: '8px' }} />
+                      Mon analyse de charge
+                    </button>
+                  )}
 
                   {profile?.role !== 'ADMIN' && (
                     <button style={styles.deleteButton} onClick={handleDeleteAccount}>
@@ -552,6 +562,23 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontWeight: '600',
     cursor: 'pointer',
     boxShadow: '0 8px 20px rgba(102, 126, 234, 0.4)',
+  },
+  trainingLoadButton: {
+    marginTop: '12px',
+    width: '100%',
+    padding: '14px',
+    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '16px',
+    fontSize: '16px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 8px 20px rgba(59, 130, 246, 0.4)',
+    transition: 'transform 0.2s',
   },
   deleteButton: {
     marginTop: '12px',

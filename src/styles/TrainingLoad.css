@@ -4,6 +4,31 @@
   padding: 2rem;
 }
 
+.header-actions {
+  margin-bottom: 1.5rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  color: #667eea;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background: #f8f9fa;
+  border-color: #667eea;
+  transform: translateX(-4px);
+}
+
 .training-load-container h1 {
   color: #2c3e50;
   margin-bottom: 1rem;
