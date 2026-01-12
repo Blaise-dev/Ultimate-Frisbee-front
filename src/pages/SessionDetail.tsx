@@ -5,7 +5,7 @@ import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import { sessionService } from '../services/session.service';
 import { Session } from '../types';
-import { MdArrowBack, MdLocationOn, MdSchedule, MdSportsScore, MdPeople, MdAccessTime } from 'react-icons/md';
+import { MdArrowBack, MdLocationOn, MdSchedule, MdSportsScore, MdPeople } from 'react-icons/md';
 
 const SessionDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();

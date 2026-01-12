@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { MdDashboard, MdEventNote, MdGroup, MdSportsMartialArts, MdDirectionsRun } from 'react-icons/md';
+import { MdDashboard, MdEventNote, MdGroup, MdSportsMartialArts, MdDirectionsRun, MdSportsBaseball } from 'react-icons/md';
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
