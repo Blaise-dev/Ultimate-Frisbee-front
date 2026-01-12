@@ -5,13 +5,15 @@ import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import { sessionService } from '../services/session.service';
 import { Session } from '../types';
-import { MdArrowBack, MdLocationOn, MdSchedule, MdSportsScore, MdPeople, MdEmojiEvents } from 'react-icons/md';
+import { MdArrowBack, MdLocationOn, MdSchedule, MdSportsScore, MdPeople, MdEmojiEvents, MdEdit } from 'react-icons/md';
+import { useAuth } from '../contexts/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const SessionDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -73,6 +75,11 @@ const SessionDetail: React.FC = () => {
         <Button onClick={() => navigate(-1)} variant="secondary">
           <MdArrowBack style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Retour
         </Button>
+        {session.type === 'MATCH' && (user?.role === 'ADMIN' || user?.role === 'COACH') && (
+          <Button onClick={() => navigate(`/add-match-performance/${session.id}`)} style={styles.addPerfButton}>
+            <MdEdit style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Saisir les Performances
+          </Button>
+        )}
         {session.type === 'MATCH' && (
           <Button onClick={() => navigate(`/match-stats/${session.id}`)} variant="primary">
             <MdEmojiEvents style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Statistiques du Match
@@ -246,6 +253,11 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: '16px',
     marginBottom: '24px',
+  },
+  addPerfButton: {
+    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+    color: 'white',
+    border: 'none',
   },
   imageContainer: {
     position: 'relative',

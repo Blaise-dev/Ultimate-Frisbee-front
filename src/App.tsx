@@ -18,6 +18,7 @@ import UserManagement from './pages/UserManagement';
 import TrainingLoad from './pages/TrainingLoad';
 import MatchStats from './pages/MatchStats';
 import AthletePerformance from './pages/AthletePerformance';
+import AddMatchPerformance from './pages/AddMatchPerformance';
 import './styles/animations.css';
 
 const App: React.FC = () => {
@@ -136,6 +137,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['ADMIN', 'COACH', 'ATHLETE']}>
                 <AthletePerformance />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-match-performance/:sessionId"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'COACH']}>
+                <AddMatchPerformance />
               </ProtectedRoute>
             }
           />
