@@ -4,6 +4,7 @@ import api from '../services/api';
 import Toast from '../components/UI/Toast';
 import { useToast } from '../hooks/useToast';
 import { MdSportsBaseball, MdArrowBack } from 'react-icons/md';
+import CreatorSignature from '../components/UI/CreatorSignature';
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -212,6 +213,10 @@ const Register: React.FC = () => {
               Déjà un compte ? Se connecter
             </Link>
           </div>
+
+          <div style={styles.signature}>
+            <CreatorSignature compact />
+          </div>
         </form>
       </div>
     </div>
@@ -323,6 +328,9 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: '500',
     display: 'inline-flex',
     alignItems: 'center',
+  },
+  signature: {
+    marginTop: '18px',
   },
 };
 

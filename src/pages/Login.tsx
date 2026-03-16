@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { MdSportsBaseball } from 'react-icons/md';
+import CreatorSignature from '../components/UI/CreatorSignature';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -75,6 +76,10 @@ const Login: React.FC = () => {
             <Link to="/register" style={styles.link}>
               S'inscrire
             </Link>
+          </div>
+
+          <div style={styles.signature}>
+            <CreatorSignature compact />
           </div>
         </form>
       </div>
@@ -185,6 +190,9 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: 'none',
     fontSize: '14px',
     fontWeight: '600',
+  },
+  signature: {
+    marginTop: '18px',
   },
 };
 

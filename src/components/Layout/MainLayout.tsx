@@ -1,6 +1,7 @@
 import React from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import CreatorSignature from '../UI/CreatorSignature';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -14,6 +15,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <Header />
         <div style={styles.content}>
           {children}
+        </div>
+        <div style={styles.footer}>
+          <CreatorSignature />
         </div>
       </div>
     </div>
@@ -36,6 +40,9 @@ const styles: Record<string, React.CSSProperties> = {
     flex: 1,
     padding: '32px',
     maxWidth: '1600px',
+  },
+  footer: {
+    padding: '0 32px 20px',
   },
 };
 
