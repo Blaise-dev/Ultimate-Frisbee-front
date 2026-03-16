@@ -698,7 +698,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: '8px',
     boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
     transition: 'all 0.2s',
-    whiteSpace: 'nowrap',
+    whiteSpace: 'normal',
   },
   editButton: {
     marginTop: '24px',
@@ -868,7 +868,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   statsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
     gap: '16px',
     marginTop: '24px',
     marginBottom: '24px',

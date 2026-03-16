@@ -36,7 +36,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 5000, 
       position: 'fixed' as const,
       top: `${20 + (index * 80)}px`,
       right: '20px',
-      minWidth: '320px',
+      minWidth: 'min(320px, calc(100vw - 40px))',
       maxWidth: '500px',
       padding: '16px 20px',
       borderRadius: '12px',
@@ -95,7 +95,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 5000, 
         <div style={{ flexShrink: 0 }}>
           {getIcon()}
         </div>
-        <div style={{ flex: 1, fontSize: '15px', fontWeight: '500' }}>
+        <div style={{ flex: 1, fontSize: '15px', fontWeight: '500', wordBreak: 'break-word' }}>
           {message}
         </div>
         <button
