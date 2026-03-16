@@ -7,6 +7,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
   loading: boolean;
 }
 
@@ -43,6 +44,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(null);
   };
 
+  const refreshUser = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setUser(null);
+      return;
+    }
+
+    const profile = await authService.getProfile();
+    setUser(profile);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -50,6 +62,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isAuthenticated: !!user,
         login,
         logout,
+        refreshUser,
         loading,
       }}
     >

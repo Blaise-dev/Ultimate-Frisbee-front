@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { MdCameraAlt, MdPerson, MdEmail, MdArrowBack, MdAdminPanelSettings, MdSportsHandball, MdVerified, MdAssessment, MdEmojiEvents } from 'react-icons/md';
 import Toast from '../components/UI/Toast';
 import { useToast } from '../hooks/useToast';
+import { useAuth } from '../contexts/AuthContext';
 
 interface ProfileData {
   email: string;
@@ -35,6 +36,7 @@ interface MatchPerformance {
 export default function Profile() {
   const navigate = useNavigate();
   const toast = useToast();
+  const { refreshUser } = useAuth();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -97,7 +99,8 @@ export default function Profile() {
         { headers: { Authorization: `Bearer ${token}` }}
       );
       setEditing(false);
-      fetchProfile();
+      await refreshUser();
+      await fetchProfile();
       toast.success('Profil mis à jour avec succès');
     } catch (error: any) {
       console.error('Erreur lors de la mise à jour:', error);
@@ -134,7 +137,8 @@ export default function Profile() {
         }
       });
 
-      fetchProfile();
+      await refreshUser();
+      await fetchProfile();
       setPhotoPreview(null);
       toast.success('Photo de profil mise à jour avec succès');
     } catch (error: any) {
