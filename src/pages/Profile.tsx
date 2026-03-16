@@ -47,6 +47,7 @@ export default function Profile() {
   const [profileImageError, setProfileImageError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [matchPerformances, setMatchPerformances] = useState<MatchPerformance[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -63,6 +64,13 @@ export default function Profile() {
   useEffect(() => {
     setProfileImageError(false);
   }, [photoPreview, profile?.profile?.profilePicture]);
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    onResize();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const fetchProfile = async () => {
     try {
@@ -253,15 +261,22 @@ export default function Profile() {
         />
       ))}
       <div style={styles.container}>
-        <div style={styles.header}>
+        <div style={{ ...styles.header, flexWrap: isMobile ? 'wrap' : 'nowrap' }}>
           <button style={styles.backButton} onClick={() => navigate(-1)}>
             <MdArrowBack size={20} />
             <span>Retour</span>
           </button>
-          <h1 style={styles.title}>Mon Profil</h1>
+          <h1 style={{ ...styles.title, width: isMobile ? '100%' : 'auto', textAlign: isMobile ? 'left' : 'center' }}>Mon Profil</h1>
           {profile?.role === 'ATHLETE' && profile.profile?.id && (
             <button 
-              style={styles.trainingLoadButton} 
+              style={{
+                ...styles.trainingLoadButton,
+                width: isMobile ? '100%' : 'auto',
+                whiteSpace: isMobile ? 'normal' : 'nowrap',
+                justifyContent: 'center',
+                padding: isMobile ? '10px 14px' : '12px 24px',
+                fontSize: isMobile ? '14px' : '15px',
+              }} 
               onClick={() => navigate(`/training-load/${profile.profile!.id}`)}
             >
               <MdAssessment size={20} style={{ marginRight: '8px' }} />
