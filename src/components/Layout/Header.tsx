@@ -13,7 +13,20 @@ const Header: React.FC = () => {
     setAvatarLoadFailed(false);
   }, [user?.profile?.profilePicture]);
 
-  const initials = `${user?.profile?.firstName?.[0] || ''}${user?.profile?.lastName?.[0] || ''}`.toUpperCase() || 'U';
+  const pickInitial = (value?: string) => {
+    if (!value) {
+      return '';
+    }
+
+    const match = value.trim().match(/[A-Za-zÀ-ÖØ-öø-ÿ0-9]/);
+    return match ? match[0].toUpperCase() : '';
+  };
+
+  const initials = (
+    `${pickInitial(user?.profile?.firstName)}${pickInitial(user?.profile?.lastName)}` ||
+    pickInitial(user?.email) ||
+    'U'
+  );
   const canShowAvatarImage = Boolean(user?.profile?.profilePicture) && !avatarLoadFailed;
   const avatarImageUrl = user?.profile?.profilePicture ? getAssetUrl(user.profile.profilePicture) : '';
 

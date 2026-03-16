@@ -194,8 +194,21 @@ export default function Profile() {
     return '';
   };
 
+  const pickInitial = (value?: string) => {
+    if (!value) {
+      return '';
+    }
+
+    const match = value.trim().match(/[A-Za-zÀ-ÖØ-öø-ÿ0-9]/);
+    return match ? match[0].toUpperCase() : '';
+  };
+
   const profileImageUrl = getProfileImageUrl();
-  const profileInitials = `${profile?.profile?.firstName?.[0] || ''}${profile?.profile?.lastName?.[0] || ''}`.toUpperCase() || 'U';
+  const profileInitials = (
+    `${pickInitial(profile?.profile?.firstName)}${pickInitial(profile?.profile?.lastName)}` ||
+    pickInitial(profile?.email) ||
+    'U'
+  );
   const canRenderProfileImage = Boolean(profileImageUrl) && !profileImageError;
 
   const getRoleIcon = () => {
