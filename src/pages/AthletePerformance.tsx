@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { MdArrowBack, MdTrendingUp, MdEmojiEvents, MdShowChart } from 'react-icons/md';
 import { AthletePerformanceHistory } from '../types';
+import { API_URL } from '../config/env';
 import '../styles/AthletePerformance.css';
 
 const AthletePerformance: React.FC = () => {
@@ -35,7 +36,7 @@ const AthletePerformance: React.FC = () => {
 
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `http://localhost:3000/api/match-stats/athlete/${athleteId}`,
+        `${API_URL}/match-stats/athlete/${athleteId}`,
         {
           params: { startDate, endDate },
           headers: { Authorization: `Bearer ${token}` },

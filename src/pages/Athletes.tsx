@@ -7,8 +7,7 @@ import Toast from '../components/UI/Toast';
 import { useToast } from '../hooks/useToast';
 import { athleteService } from '../services/athlete.service';
 import { Athlete } from '../types';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { getAssetUrl } from '../config/env';
 import { MdPeople, MdAdd, MdEdit, MdDelete, MdSearch, MdFilterList, MdTrendingUp, MdEmojiEvents, MdAssessment, MdShowChart } from 'react-icons/md';
 
 const Athletes: React.FC = () => {
@@ -261,7 +260,7 @@ const Athletes: React.FC = () => {
                   }}>
                     {athlete.profilePicture ? (
                       <img 
-                        src={`${API_URL.replace('/api', '')}${athlete.profilePicture}`} 
+                        src={getAssetUrl(athlete.profilePicture)} 
                         alt={`${athlete.firstName} ${athlete.lastName}`}
                         style={styles.avatarImg}
                       />

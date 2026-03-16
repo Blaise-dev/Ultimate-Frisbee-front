@@ -6,8 +6,7 @@ import Button from '../components/UI/Button';
 import { athleteService } from '../services/athlete.service';
 import { Athlete } from '../types';
 import { MdArrowBack, MdEmail, MdCategory, MdTrendingUp, MdAssessment, MdShowChart } from 'react-icons/md';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { getAssetUrl } from '../config/env';
 
 const AthleteDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -80,7 +79,7 @@ const AthleteDetail: React.FC = () => {
       <div style={styles.imageContainer}>
         <img 
           src={athlete.profilePicture 
-            ? `${API_URL.replace('/api', '')}${athlete.profilePicture}`
+            ? getAssetUrl(athlete.profilePicture)
             : `https://ui-avatars.com/api/?name=${athlete.firstName}+${athlete.lastName}&size=1200&background=10b981&color=fff&bold=true`
           }
           alt={`${athlete.firstName} ${athlete.lastName}`}

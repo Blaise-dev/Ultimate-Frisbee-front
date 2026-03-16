@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { MdArrowBack, MdEmojiEvents, MdTrendingUp, MdSportsHandball } from 'react-icons/md';
 import { MatchStats as MatchStatsType } from '../types';
+import { API_URL } from '../config/env';
 import '../styles/MatchStats.css';
 
 const MatchStats: React.FC = () => {
@@ -23,7 +24,7 @@ const MatchStats: React.FC = () => {
 
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `http://localhost:3000/api/match-stats/session/${sessionId}`,
+        `${API_URL}/match-stats/session/${sessionId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

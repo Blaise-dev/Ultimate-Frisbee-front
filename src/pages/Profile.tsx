@@ -5,6 +5,7 @@ import { MdCameraAlt, MdPerson, MdEmail, MdArrowBack, MdAdminPanelSettings, MdSp
 import Toast from '../components/UI/Toast';
 import { useToast } from '../hooks/useToast';
 import { useAuth } from '../contexts/AuthContext';
+import { getAssetUrl } from '../config/env';
 
 interface ProfileData {
   email: string;
@@ -183,9 +184,7 @@ export default function Profile() {
   const getProfileImageUrl = () => {
     if (photoPreview) return photoPreview;
     if (profile?.profile?.profilePicture) {
-      // Les fichiers statiques sont servis depuis /uploads, pas /api/uploads
-      const baseUrl = API_URL.replace('/api', '');
-      return `${baseUrl}${profile.profile.profilePicture}`;
+      return getAssetUrl(profile.profile.profilePicture);
     }
     const name = profile?.profile 
       ? `${profile.profile.firstName}+${profile.profile.lastName}` 

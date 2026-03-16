@@ -5,7 +5,7 @@ import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import { sessionService } from '../services/session.service';
 import { Session } from '../types';
-import { MdArrowBack, MdSave, MdSportsScore } from 'react-icons/md';
+import { MdArrowBack, MdSave } from 'react-icons/md';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';

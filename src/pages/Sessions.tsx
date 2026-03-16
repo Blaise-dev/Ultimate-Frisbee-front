@@ -11,8 +11,7 @@ import { coachService } from '../services/coach.service';
 import { Session, Coach } from '../types';
 import { MdEventNote, MdAdd, MdEdit, MdDelete, MdLocationOn, MdSchedule, MdSportsScore, MdImage, MdPersonAdd, MdPersonRemove } from 'react-icons/md';
 import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { API_URL, getAssetUrl, getDefaultSessionImageUrl } from '../config/env';
 
 const Sessions: React.FC = () => {
   const { user } = useAuth();
@@ -69,9 +68,9 @@ const Sessions: React.FC = () => {
       });
       // Afficher l'image existante ou l'image par défaut
       if (session.imageUrl) {
-        setImagePreview(`${API_URL.replace('/api', '')}${session.imageUrl}`);
+        setImagePreview(getAssetUrl(session.imageUrl));
       } else {
-        setImagePreview(`http://localhost:3000/uploads/sessions/default-${session.type.toLowerCase()}.jpg`);
+        setImagePreview(getDefaultSessionImageUrl(session.type));
       }
     } else {
       setSelectedSession(null);
@@ -265,8 +264,8 @@ const Sessions: React.FC = () => {
           <div style={styles.grid}>
             {sessions.map((session) => {
               const imageSrc = session.imageUrl 
-                ? `${API_URL.replace('/api', '')}${session.imageUrl}`
-                : `http://localhost:3000/uploads/sessions/default-${session.type.toLowerCase()}.jpg`;
+                ? getAssetUrl(session.imageUrl)
+                : getDefaultSessionImageUrl(session.type);
               
               console.log('Session:', session.title, 'ImageURL:', session.imageUrl, 'Final src:', imageSrc);
               
@@ -284,7 +283,7 @@ const Sessions: React.FC = () => {
                         onError={(e) => {
                           // Image par défaut si erreur de chargement
                           const img = e.target as HTMLImageElement;
-                          const fallbackSrc = `http://localhost:3000/uploads/sessions/default-${session.type.toLowerCase()}.jpg`;
+                          const fallbackSrc = getDefaultSessionImageUrl(session.type);
                           console.error('Image loading error for:', img.src, 'Fallback to:', fallbackSrc);
                           img.src = fallbackSrc;
                         }}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { MdArrowBack } from 'react-icons/md';
+import { API_URL } from '../config/env';
 import '../styles/TrainingLoad.css';
 
 interface TrainingLoadData {
@@ -66,7 +67,7 @@ const TrainingLoad: React.FC = () => {
       
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `http://localhost:3000/api/training-load/athlete/${athleteId}`,
+        `${API_URL}/training-load/athlete/${athleteId}`,
         {
           params: { startDate, endDate },
           headers: { Authorization: `Bearer ${token}` },

@@ -105,7 +105,7 @@ export default function UserManagement() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${API_URL}/admin/ban/${userId}`, 
+      await axios.post(`${API_URL}/admin/ban/${userId}`, 
         { reason: 'Banni par l\'administrateur' },
         { headers: { Authorization: `Bearer ${token}` }}
       );
@@ -123,7 +123,7 @@ export default function UserManagement() {
   const handleUnbanUser = async (userId: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${API_URL}/admin/unban/${userId}`, {},
+      await axios.post(`${API_URL}/admin/unban/${userId}`, {},
         { headers: { Authorization: `Bearer ${token}` }}
       );
       toast.success('Utilisateur débanni avec succès');
@@ -144,7 +144,7 @@ export default function UserManagement() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.delete(`${API_URL}/admin/delete/${userId}`,
+      await axios.delete(`${API_URL}/admin/delete/${userId}`,
         { headers: { Authorization: `Bearer ${token}` }}
       );
       toast.success('Utilisateur supprimé avec succès');

@@ -2,15 +2,24 @@ import React from 'react';
 
 interface CreatorSignatureProps {
   compact?: boolean;
+  profileUrl?: string;
+  repoUrl?: string;
 }
 
-const CreatorSignature: React.FC<CreatorSignatureProps> = ({ compact = false }) => {
+const CreatorSignature: React.FC<CreatorSignatureProps> = ({
+  compact = false,
+  profileUrl = 'https://github.com/Blaise-dev',
+  repoUrl = 'https://github.com/Blaise-dev/Ultimate-Frisbee',
+}) => {
   return (
     <div style={compact ? styles.compactWrapper : styles.wrapper}>
-      <span style={styles.label}>Créé par</span>
-      <span style={styles.name}>Blaise</span>
+      <a href={profileUrl} target="_blank" rel="noreferrer" style={styles.brandLink}>
+        Blaise.dev
+      </a>
       <span style={styles.separator}>·</span>
-      <span style={styles.brand}>Blaise.dev</span>
+      <a href={repoUrl} target="_blank" rel="noreferrer" style={styles.repoLink}>
+        Repo
+      </a>
     </div>
   );
 };
@@ -41,16 +50,18 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '11px',
     fontWeight: '600',
   },
-  name: {
-    color: '#0f172a',
-    fontWeight: '700',
-  },
   separator: {
     opacity: 0.45,
   },
-  brand: {
+  brandLink: {
     color: '#2563eb',
     fontWeight: '700',
+    textDecoration: 'none',
+  },
+  repoLink: {
+    color: '#0f172a',
+    fontWeight: '600',
+    textDecoration: 'none',
   },
 };
 

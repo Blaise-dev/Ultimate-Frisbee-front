@@ -7,8 +7,7 @@ import { sessionService } from '../services/session.service';
 import { Session } from '../types';
 import { MdArrowBack, MdLocationOn, MdSchedule, MdSportsScore, MdPeople, MdEmojiEvents, MdEdit } from 'react-icons/md';
 import { useAuth } from '../contexts/AuthContext';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { getAssetUrl, getDefaultSessionImageUrl } from '../config/env';
 
 const SessionDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -63,8 +62,8 @@ const SessionDetail: React.FC = () => {
   // Debug: afficher les informations de l'image
   const imageSrc = session 
     ? (session.imageUrl 
-        ? `${API_URL.replace('/api', '')}${session.imageUrl}`
-        : `http://localhost:3000/uploads/sessions/default-${session.type.toLowerCase()}.jpg`)
+        ? getAssetUrl(session.imageUrl)
+        : getDefaultSessionImageUrl(session.type))
     : '';
   
   console.log('SessionDetail - Session:', session?.title, 'ImageURL:', session?.imageUrl, 'Final src:', imageSrc);
@@ -96,7 +95,7 @@ const SessionDetail: React.FC = () => {
           onError={(e) => {
             // Image de fallback si erreur
             const img = e.target as HTMLImageElement;
-            const fallbackSrc = `http://localhost:3000/uploads/sessions/default-${session.type.toLowerCase()}.jpg`;
+            const fallbackSrc = getDefaultSessionImageUrl(session.type);
             console.error('SessionDetail - Image loading error for:', img.src, 'Fallback to:', fallbackSrc);
             img.src = fallbackSrc;
           }}
@@ -220,7 +219,7 @@ const SessionDetail: React.FC = () => {
                     }}>
                       {athlete.profilePicture ? (
                         <img 
-                          src={`${API_URL.replace('/api', '')}${athlete.profilePicture}`} 
+                          src={getAssetUrl(athlete.profilePicture)} 
                           alt={`${athlete.firstName} ${athlete.lastName}`}
                           style={styles.avatarImg}
                         />

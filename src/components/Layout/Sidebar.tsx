@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { MdDashboard, MdEventNote, MdGroup, MdSportsMartialArts, MdDirectionsRun, MdSportsBaseball, MdPeople } from 'react-icons/md';
+import CreatorSignature from '../UI/CreatorSignature';
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
@@ -42,6 +43,9 @@ const Sidebar: React.FC = () => {
           </Link>
         ))}
       </nav>
+      <div style={styles.signatureArea}>
+        <CreatorSignature compact />
+      </div>
     </aside>
   );
 };
@@ -56,6 +60,8 @@ const styles: Record<string, React.CSSProperties> = {
     left: 0,
     top: 0,
     borderRight: '1px solid #2d3548',
+    display: 'flex',
+    flexDirection: 'column',
   },
   logo: {
     display: 'flex',
@@ -79,6 +85,7 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: 'column',
     gap: '2px',
     padding: '16px 12px',
+    flex: 1,
   },
   navItem: {
     display: 'flex',
@@ -99,6 +106,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
   navIcon: {
     fontSize: '18px',
+  },
+  signatureArea: {
+    borderTop: '1px solid #2d3548',
+    padding: '14px 12px 16px',
   },
 };
 

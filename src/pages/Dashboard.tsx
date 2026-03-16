@@ -8,8 +8,7 @@ import { athleteService } from '../services/athlete.service';
 import { groupService } from '../services/group.service';
 import { Session, Athlete, Group } from '../types';
 import { MdDashboard, MdEventNote, MdAccessTime, MdPeople, MdLocationOn, MdSchedule, MdGroup } from 'react-icons/md';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { getAssetUrl, getDefaultSessionImageUrl } from '../config/env';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -164,14 +163,14 @@ const Dashboard: React.FC = () => {
                   <div style={styles.cardImage}>
                     <img 
                       src={session.imageUrl 
-                        ? `${API_URL.replace('/api', '')}${session.imageUrl}`
-                        : `http://localhost:3000/uploads/sessions/default-${session.type.toLowerCase()}.jpg`
+                        ? getAssetUrl(session.imageUrl)
+                        : getDefaultSessionImageUrl(session.type)
                       } 
                       alt={session.title}
                       style={styles.cardImg}
                       onError={(e) => {
                         const img = e.target as HTMLImageElement;
-                        img.src = `http://localhost:3000/uploads/sessions/default-${session.type.toLowerCase()}.jpg`;
+                        img.src = getDefaultSessionImageUrl(session.type);
                       }}
                     />
                     <span style={{
@@ -268,7 +267,7 @@ const Dashboard: React.FC = () => {
                     <div style={styles.athleteCardImage}>
                       <img 
                         src={athlete.profilePicture 
-                          ? `${API_URL.replace('/api', '')}${athlete.profilePicture}`
+                          ? getAssetUrl(athlete.profilePicture)
                           : `https://ui-avatars.com/api/?name=${athlete.firstName}+${athlete.lastName}&size=400&background=10b981&color=fff&bold=true`
                         }
                         alt={`${athlete.firstName} ${athlete.lastName}`}

@@ -6,8 +6,7 @@ import Button from '../components/UI/Button';
 import { coachService } from '../services/coach.service';
 import { Coach } from '../types';
 import { MdArrowBack, MdPerson, MdEmail, MdCalendarToday } from 'react-icons/md';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { getAssetUrl } from '../config/env';
 
 const CoachDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -66,7 +65,7 @@ const CoachDetail: React.FC = () => {
           }}>
             {coach.profilePicture ? (
               <img 
-                src={`${API_URL.replace('/api', '')}${coach.profilePicture}`} 
+                src={getAssetUrl(coach.profilePicture)} 
                 alt={`${coach.firstName} ${coach.lastName}`}
                 style={styles.avatarImg}
               />

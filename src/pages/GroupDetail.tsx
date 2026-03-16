@@ -6,8 +6,7 @@ import Button from '../components/UI/Button';
 import { groupService } from '../services/group.service';
 import { Group } from '../types';
 import { MdArrowBack, MdGroup, MdPeople, MdSportsMartialArts } from 'react-icons/md';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { getAssetUrl } from '../config/env';
 
 const GroupDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -119,7 +118,7 @@ const GroupDetail: React.FC = () => {
                     }}>
                       {athlete.profilePicture ? (
                         <img 
-                          src={`${API_URL.replace('/api', '')}${athlete.profilePicture}`} 
+                          src={getAssetUrl(athlete.profilePicture)} 
                           alt={`${athlete.firstName} ${athlete.lastName}`}
                           style={styles.avatarImg}
                         />

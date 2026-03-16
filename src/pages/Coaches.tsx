@@ -7,8 +7,7 @@ import Toast from '../components/UI/Toast';
 import { useToast } from '../hooks/useToast';
 import { coachService } from '../services/coach.service';
 import { Coach } from '../types';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { getAssetUrl } from '../config/env';
 import { MdSportsMartialArts, MdAdd, MdEdit, MdDelete, MdCalendarToday } from 'react-icons/md';
 
 const Coaches: React.FC = () => {
@@ -144,7 +143,7 @@ const Coaches: React.FC = () => {
                   }}>
                     {coach.profilePicture ? (
                       <img 
-                        src={`${API_URL.replace('/api', '')}${coach.profilePicture}`} 
+                        src={getAssetUrl(coach.profilePicture)} 
                         alt={`${coach.firstName} ${coach.lastName}`}
                         style={styles.avatarImg}
                       />

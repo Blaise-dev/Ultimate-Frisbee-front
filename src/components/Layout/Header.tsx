@@ -2,8 +2,7 @@ import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { MdLogout, MdPerson } from 'react-icons/md';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { getAssetUrl } from '../../config/env';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
@@ -22,7 +21,7 @@ const Header: React.FC = () => {
         >
           {user?.profile?.profilePicture ? (
             <img 
-              src={`${API_URL.replace('/api', '')}${user.profile.profilePicture}`} 
+              src={getAssetUrl(user.profile.profilePicture)} 
               alt="Profil" 
               style={styles.avatarImg}
             />
