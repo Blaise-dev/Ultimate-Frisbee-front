@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { MdLogout, MdPerson } from 'react-icons/md';
@@ -7,6 +7,15 @@ import { getAssetUrl } from '../../config/env';
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
+
+  useEffect(() => {
+    setAvatarLoadFailed(false);
+  }, [user?.profile?.profilePicture]);
+
+  const initials = `${user?.profile?.firstName?.[0] || ''}${user?.profile?.lastName?.[0] || ''}`.toUpperCase() || 'U';
+  const canShowAvatarImage = Boolean(user?.profile?.profilePicture) && !avatarLoadFailed;
+  const avatarImageUrl = user?.profile?.profilePicture ? getAssetUrl(user.profile.profilePicture) : '';
 
   return (
     <header style={styles.header}>
@@ -14,19 +23,20 @@ const Header: React.FC = () => {
         <div 
           style={{
             ...styles.avatar,
-            ...(user?.profile?.profilePicture ? styles.avatarImage : {})
+            ...(canShowAvatarImage ? styles.avatarImage : {})
           }}
           onClick={() => navigate('/profile')}
           title="Mon profil"
         >
-          {user?.profile?.profilePicture ? (
+          {canShowAvatarImage ? (
             <img 
-              src={getAssetUrl(user.profile.profilePicture)} 
+              src={avatarImageUrl} 
               alt="Profil" 
               style={styles.avatarImg}
+              onError={() => setAvatarLoadFailed(true)}
             />
           ) : (
-            <>{user?.profile?.firstName?.[0]}{user?.profile?.lastName?.[0]}</>
+            <>{initials}</>
           )}
         </div>
         <div>

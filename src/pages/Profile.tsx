@@ -44,6 +44,7 @@ export default function Profile() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [profileImageError, setProfileImageError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [matchPerformances, setMatchPerformances] = useState<MatchPerformance[]>([]);
 
@@ -58,6 +59,10 @@ export default function Profile() {
       fetchMatchPerformances();
     }
   }, [profile]);
+
+  useEffect(() => {
+    setProfileImageError(false);
+  }, [photoPreview, profile?.profile?.profilePicture]);
 
   const fetchProfile = async () => {
     try {
@@ -186,11 +191,12 @@ export default function Profile() {
     if (profile?.profile?.profilePicture) {
       return getAssetUrl(profile.profile.profilePicture);
     }
-    const name = profile?.profile 
-      ? `${profile.profile.firstName}+${profile.profile.lastName}` 
-      : profile?.email?.split('@')[0] || 'Admin';
-    return `https://ui-avatars.com/api/?name=${name}&size=400&background=667eea&color=fff&bold=true`;
+    return '';
   };
+
+  const profileImageUrl = getProfileImageUrl();
+  const profileInitials = `${profile?.profile?.firstName?.[0] || ''}${profile?.profile?.lastName?.[0] || ''}`.toUpperCase() || 'U';
+  const canRenderProfileImage = Boolean(profileImageUrl) && !profileImageError;
 
   const getRoleIcon = () => {
     switch (profile?.role) {
@@ -254,11 +260,16 @@ export default function Profile() {
       <div style={styles.card}>
         <div style={styles.photoSection}>
           <div style={styles.photoContainer}>
-            <img 
-              src={getProfileImageUrl()} 
-              alt="Profile" 
-              style={styles.profileImage}
-            />
+            {canRenderProfileImage ? (
+              <img 
+                src={profileImageUrl} 
+                alt="Photo de profil" 
+                style={styles.profileImage}
+                onError={() => setProfileImageError(true)}
+              />
+            ) : (
+              <div style={styles.profileInitialsAvatar}>{profileInitials}</div>
+            )}
             {uploading && (
               <div style={styles.uploadingOverlay}>
                 <div style={styles.spinner}></div>
@@ -562,6 +573,21 @@ const styles: { [key: string]: React.CSSProperties } = {
     objectFit: 'cover',
     border: '6px solid white',
     boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
+  },
+  profileInitialsAvatar: {
+    width: '200px',
+    height: '200px',
+    borderRadius: '50%',
+    border: '6px solid white',
+    boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
+    background: 'linear-gradient(135deg, #4f9eff 0%, #3b7dd6 100%)',
+    color: 'white',
+    fontSize: '64px',
+    fontWeight: 700,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    userSelect: 'none',
   },
   uploadingOverlay: {
     position: 'absolute',
