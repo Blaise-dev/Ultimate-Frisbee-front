@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { MdLogout, MdPerson } from 'react-icons/md';
+import { MdLogout, MdPerson, MdMenu } from 'react-icons/md';
 import { getAssetUrl } from '../../config/env';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  isMobile: boolean;
+  onMenuClick: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ isMobile, onMenuClick }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
@@ -31,8 +36,13 @@ const Header: React.FC = () => {
   const avatarImageUrl = user?.profile?.profilePicture ? getAssetUrl(user.profile.profilePicture) : '';
 
   return (
-    <header style={styles.header}>
+    <header style={{ ...styles.header, padding: isMobile ? '12px 14px' : '16px 32px' }}>
       <div style={styles.userInfo}>
+        {isMobile && (
+          <button onClick={onMenuClick} style={styles.menuButton} title="Menu">
+            <MdMenu style={{ fontSize: '22px' }} />
+          </button>
+        )}
         <div 
           style={{
             ...styles.avatar,
@@ -56,7 +66,7 @@ const Header: React.FC = () => {
           <div style={styles.userName}>
             {user?.profile?.firstName} {user?.profile?.lastName}
           </div>
-          <div style={styles.userRole}>{user?.role}</div>
+          {!isMobile && <div style={styles.userRole}>{user?.role}</div>}
         </div>
       </div>
       <div style={styles.headerActions}>
@@ -128,6 +138,18 @@ const styles: Record<string, React.CSSProperties> = {
   headerActions: {
     display: 'flex',
     gap: '12px',
+  },
+  menuButton: {
+    width: '38px',
+    height: '38px',
+    borderRadius: '10px',
+    border: '1px solid #d1d5db',
+    background: '#fff',
+    color: '#374151',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
   },
   profileButton: {
     padding: '12px',

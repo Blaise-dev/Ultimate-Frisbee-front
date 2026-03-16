@@ -98,7 +98,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   card: {
     background: '#ffffff',
-    padding: '48px',
+    padding: 'clamp(20px, 6vw, 48px)',
     borderRadius: '8px',
     boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
     width: '100%',
@@ -119,7 +119,7 @@ const styles: Record<string, React.CSSProperties> = {
   title: {
     textAlign: 'center',
     margin: '0',
-    fontSize: '28px',
+    fontSize: 'clamp(22px, 5vw, 28px)',
     color: '#1f2937',
     fontWeight: '600',
   },

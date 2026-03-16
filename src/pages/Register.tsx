@@ -234,7 +234,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   card: {
     background: '#ffffff',
-    padding: '48px',
+    padding: 'clamp(20px, 6vw, 48px)',
     borderRadius: '8px',
     boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
     width: '100%',
@@ -254,7 +254,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   title: {
     margin: 0,
-    fontSize: '32px',
+    fontSize: 'clamp(24px, 6vw, 32px)',
     fontWeight: '700',
     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     WebkitBackgroundClip: 'text',
@@ -263,7 +263,7 @@ const styles: Record<string, React.CSSProperties> = {
   subtitle: {
     textAlign: 'center',
     color: '#374151',
-    fontSize: '20px',
+    fontSize: 'clamp(16px, 4.5vw, 20px)',
     marginBottom: '32px',
     fontWeight: '600',
   },
@@ -274,7 +274,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   row: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
     gap: '16px',
   },
   formGroup: {

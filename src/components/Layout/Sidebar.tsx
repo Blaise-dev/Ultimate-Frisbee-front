@@ -4,7 +4,13 @@ import { useAuth } from '../../contexts/AuthContext';
 import { MdDashboard, MdEventNote, MdGroup, MdSportsMartialArts, MdDirectionsRun, MdSportsBaseball, MdPeople } from 'react-icons/md';
 import CreatorSignature from '../UI/CreatorSignature';
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  isMobile: boolean;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, onClose }) => {
   const location = useLocation();
   const { user } = useAuth();
 
@@ -23,7 +29,15 @@ const Sidebar: React.FC = () => {
   );
 
   return (
-    <aside style={styles.sidebar}>
+    <aside
+      style={{
+        ...styles.sidebar,
+        width: isMobile ? '78vw' : '260px',
+        maxWidth: isMobile ? '300px' : 'none',
+        transform: isMobile ? (isOpen ? 'translateX(0)' : 'translateX(-110%)') : 'translateX(0)',
+        zIndex: isMobile ? 1200 : 100,
+      }}
+    >
       <div style={styles.logo}>
         <MdSportsBaseball style={styles.logoIcon} />
         <span style={styles.logoText}>Ultimate</span>
@@ -36,6 +50,11 @@ const Sidebar: React.FC = () => {
             style={{
               ...styles.navItem,
               ...(location.pathname === item.path ? styles.navItemActive : {}),
+            }}
+            onClick={() => {
+              if (isMobile) {
+                onClose();
+              }
             }}
           >
             <span style={styles.navIcon}>{item.icon}</span>
@@ -62,6 +81,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRight: '1px solid #2d3548',
     display: 'flex',
     flexDirection: 'column',
+    transition: 'transform 0.25s ease',
   },
   logo: {
     display: 'flex',
