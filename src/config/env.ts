@@ -8,11 +8,28 @@ export const getAssetUrl = (assetPath?: string | null) => {
     return '';
   }
 
-  if (/^https?:\/\//i.test(assetPath)) {
-    return assetPath;
+  let normalizedPath = assetPath.trim();
+
+  if (
+    (normalizedPath.startsWith('"') && normalizedPath.endsWith('"')) ||
+    (normalizedPath.startsWith("'") && normalizedPath.endsWith("'"))
+  ) {
+    normalizedPath = normalizedPath.slice(1, -1).trim();
   }
 
-  return `${API_BASE_URL}${assetPath}`;
+  if (normalizedPath.startsWith('//')) {
+    normalizedPath = `https:${normalizedPath}`;
+  }
+
+  if (normalizedPath.startsWith('http://') && normalizedPath.includes('res.cloudinary.com')) {
+    normalizedPath = normalizedPath.replace('http://', 'https://');
+  }
+
+  if (/^https?:\/\//i.test(normalizedPath)) {
+    return normalizedPath;
+  }
+
+  return `${API_BASE_URL}${normalizedPath}`;
 };
 
 export const getDefaultSessionImageUrl = (sessionType: string) => (
